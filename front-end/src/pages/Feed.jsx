@@ -44,7 +44,7 @@ function Feed(){
                 }
                 </div>
             </div>
-            <div className="sticky top-0 bg-white">
+            <div className="sticky hidden md:block top-0 bg-white">
                 <div className="max-w-xs text-xs p-4 rounded-md inline-flex flex-col gap-2 shadow">
                     <h1 className="text-shadow-teal-800 font-semibold">sponsored</h1>
                     <img src={assets.sponsored_img} className="w-75

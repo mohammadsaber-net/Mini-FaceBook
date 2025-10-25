@@ -5,7 +5,7 @@ import moment from 'moment'
 import { useAuth, useUser } from '@clerk/clerk-react'
 import api from '../api/axios'
 import toast from "react-hot-toast"
-
+import ResponsiveImage from "./responsiveImage.jsx";
 export default function RecentMessage() {
     const [message,setMessage]=useState([])
     const {user}=useUser()

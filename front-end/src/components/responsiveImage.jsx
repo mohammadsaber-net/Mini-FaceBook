@@ -1,4 +1,4 @@
-export default function ResponsiveImage({ src, alt, className }) {
+export default function ResponsiveImage({ src, alt, className, ...rest  }) {
   if (!src) return null;
 
   const base = src.split("?")[0];

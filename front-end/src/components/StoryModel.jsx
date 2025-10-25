@@ -3,7 +3,7 @@ import { ArrowLeft, Sparkle, TextIcon, Upload } from 'lucide-react'
 import React, { useState } from 'react'
 import toast from 'react-hot-toast'
 import api from '../api/axios'
-
+import ResponsiveImage from "./responsiveImage.jsx";
 function StoryModel({setShowModel,fetchStories}) {
     const bgColor=["red","blue","gray","green"]
     const [mode,setMode]=useState("text")
@@ -89,7 +89,7 @@ function StoryModel({setShowModel,fetchStories}) {
             {
                 mode==="media"&&preview&&(
                     media?.type.startsWith("image")?(
-                        <img src={preview} className='object-contain max-h-full'/>
+                        <ResponsiveImage src={preview} className='object-contain max-h-full'/>
                     ):(
                         <video src={preview} className='object-contain max-h-full'/>
                     )

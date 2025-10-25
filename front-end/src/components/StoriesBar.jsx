@@ -7,7 +7,7 @@ import StoryView from "./storyView.jsx";
 import { useAuth } from "@clerk/clerk-react";
 import api from "../api/axios.js";
 import toast from "react-hot-toast";
-
+import ResponsiveImage from "./responsiveImage.jsx";
 function StoriesBar() {
     const [story,setStory]=useState([])
     const [showModel,setShowModel]=useState(false)
@@ -31,7 +31,7 @@ function StoriesBar() {
         fetchStories()
     },[])
   return (
-    <div className=" overflow-x-auto  w-[calc(100vw-150px)] no-scrollbar sm:w-[calc(100vw-480px)]  min-w-40 relative ">
+    <div className=" overflow-x-auto  w-[calc(100vw-150px)] no-scrollbar sm:w-[calc(100vw-250px)]  min-w-40 relative ">
       <div className="flex gap-4 pb-5">
          
         <div onClick={()=>setShowModel(true)} className="min-w-30
@@ -62,7 +62,7 @@ function StoriesBar() {
                     )
                 }
                  <div className="absolute bg-black w-full h-full rounded-lg overflow-hidden">
-                    { st.media_type==="image"?<img src={st.media_url} className="w-full h-full"/>
+                    { st.media_type==="image"?<ResponsiveImage src={st.media_url} className="w-full h-full"/>
                     :<video src={st.media_url}  className="w-full h-full"/>
                  }  </div>
                    
