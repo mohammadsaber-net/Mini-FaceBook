@@ -1,6 +1,6 @@
 import { BadgeCent, BadgeCheck, X } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
-import ResponsiveImage from './responsiveImage'
+
 function StoryView({veiwStory,setveiwStory}) {
     const closeStory=()=>{
         setveiwStory(null)
@@ -56,7 +56,7 @@ function StoryView({veiwStory,setveiwStory}) {
         </div>
       </div>
       <div className='absolute z-10 top-4 flex flex-col spa-x-3 backdrop-blur-2xl bgblack/50 rounded left-4'>
-      <ResponsiveImage src={veiwStory.user?.profile_picture} className='size-7 sm:size-8 object-cover border-white border rounded-full' alt="" />
+      <img src={veiwStory.user?.profile_picture} className='size-7 sm:size-8 object-cover border-white border rounded-full' alt="" />
       <div className='text-white font-medium gap-1.5 m-auto flex-cent'>
         <span>{veiwStory?.user.full_name}</span>
         <BadgeCheck size={18}/>

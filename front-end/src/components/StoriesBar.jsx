@@ -7,7 +7,7 @@ import StoryView from "./storyView.jsx";
 import { useAuth } from "@clerk/clerk-react";
 import api from "../api/axios.js";
 import toast from "react-hot-toast";
-import ResponsiveImage from './responsiveImage'
+
 function StoriesBar() {
     const [story,setStory]=useState([])
     const [showModel,setShowModel]=useState(false)
@@ -47,7 +47,7 @@ function StoriesBar() {
         {story?.map((st,index)=>{
         return(
             <div onClick={()=>setveiwStory(st)} key={index} className={`relative rounded-lg bg-gradient-to-r min-w-20 md:min-w-36 overflow-hidden min-h-28 md:min-h-40 p-1 me-0.5 duration-200 cursor-pointer transition-all`}>
-                <ResponsiveImage src={st.user.profile_picture} className="absolute z-10 size-8 rounded-full top-2 left-2"/>
+                <img src={st.user.profile_picture} className="absolute z-10 size-8 rounded-full top-2 left-2"/>
                 <p className=" truncate top-10 left-3 z-20 text-white text-xs absolute">
                     {st.content}
                 </p>

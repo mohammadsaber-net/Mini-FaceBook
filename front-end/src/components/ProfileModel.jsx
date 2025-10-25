@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { useAuth } from "@clerk/clerk-react"
 import { updateUser } from "../redux/user/userSlice.js"
 import toast from "react-hot-toast"
-import ResponsiveImage from './responsiveImage'
+
 export default function ProfileModel({setShowEdit}) {
     const dispatch=useDispatch()
     const {getToken}=useAuth()
@@ -54,7 +54,7 @@ export default function ProfileModel({setShowEdit}) {
                             <input onChange={(e)=>setEditForm({...editForm,profile_picture:e.target.files[0]})} type="file" accept="image/*" id="pictureProfile" hidden className="
                             rounded-lg w-full border bg-gray-200"/>
                             <div className="group relative">
-                                <ResponsiveImage className="size-24 rounded-full object-cover mt-2" src={editForm.profile_picture?URL.createObjectURL(editForm.profile_picture):user.profile_picture} alt="" />
+                                <img className="size-24 rounded-full object-cover mt-2" src={editForm.profile_picture?URL.createObjectURL(editForm.profile_picture):user.profile_picture} alt="" />
                                 <div className="absolute transition-all cursor-pointer duration-200 opacity-0 group-hover:opacity-100 flex top-0 left-0 right-0 bottom-0 bg-black/40 rounded-full items-center justify-center" >
                                 <Pencil className="size-5 text-white"/>
 
@@ -72,7 +72,7 @@ export default function ProfileModel({setShowEdit}) {
                             onChange={(e)=>setEditForm({...editForm,cover_photo:e.target.files[0]})}
                             hidden id="coverPhoto"  />
                             <div className="group relative">
-                                <ResponsiveImage className="w-80 h-40 rounded-lg object-cover" src={editForm.cover_photo?URL.createObjectURL(editForm.cover_photo):user.cover_photo} alt="" />
+                                <img className="w-80 h-40 rounded-lg object-cover" src={editForm.cover_photo?URL.createObjectURL(editForm.cover_photo):user.cover_photo} alt="" />
                                 <div className="absolute rounded-lg transition-all cursor-pointer duration-200 opacity-0 group-hover:opacity-100 flex top-0 left-0 right-0 bottom-0 bg-black/40 items-center justify-center" >
                                 <Pencil className="size-5 text-white"/>
                                 </div>

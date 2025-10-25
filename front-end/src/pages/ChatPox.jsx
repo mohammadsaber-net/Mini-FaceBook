@@ -7,7 +7,7 @@ import { useAuth } from "@clerk/clerk-react"
 import { addMessages, fetchMessages, resetMessages } from "../redux/messages/messages.js"
 import toast from "react-hot-toast"
 import api from "../api/axios.js"
-import ResponsiveImage from '../components/responsiveImage.jsx'
+
 function ChatBox(){
     const {messages}=useSelector(state=>state.messages)
     const {userId}=useParams()
@@ -71,7 +71,7 @@ function ChatBox(){
         <div className="flex flex-col h-full pt-2">
             <div className="flex items-center gap-2 md:px-10 xl:pl-24 bg-gradient-to-r from-indigo-100
             to-purple-100 border-b border-gray-300">
-                <ResponsiveImage src={user?.profile_picture} onClick={()=>navigate(`/profile/${user._id}`)} className="size-8 cursor-pointer rounded-full" alt="" />
+                <img src={user?.profile_picture} onClick={()=>navigate(`/profile/${user._id}`)} className="size-8 cursor-pointer rounded-full" alt="" />
                 <div >
                     <p className="font-medium ">
                         {

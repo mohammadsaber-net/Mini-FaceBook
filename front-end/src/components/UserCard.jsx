@@ -7,7 +7,7 @@ import { useAuth } from '@clerk/clerk-react'
 import api from '../api/axios.js'
 import { fetchUser } from "../redux/user/userSlice.js"
 import { useNavigate } from "react-router-dom"
-import ResponsiveImage from './responsiveImage'
+
 export default function UserCard(users) {
     const user=users.user
     const {getToken}=useAuth()
@@ -50,7 +50,7 @@ export default function UserCard(users) {
     <div key={user._id} className='p-4 pt-6 flex max-w-64 bg-white flex-col justify-between rou-md
      border-gray-200 border'>
         <div className='text-center'>
-        <ResponsiveImage src={user.profile_picture} className='size-8
+        <img src={user.profile_picture} className='size-8
          rounded-full mx-auto shadow-md' alt="" />
          <p className='font-semibold mt-4 text-blue-600'>
             {user.full_name}

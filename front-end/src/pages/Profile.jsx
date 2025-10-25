@@ -9,7 +9,6 @@ import UserProfileInfo from '../components/UserProfileInfo.jsx'
 import ProfileModel from '../components/ProfileModel.jsx'
 import { useAuth } from '@clerk/clerk-react'
 import { useDispatch, useSelector } from 'react-redux'
-import ResponsiveImage from '../components/responsiveImage.jsx'
 import api from '../api/axios.js'
 import toast from 'react-hot-toast'
 export default function Profile() {
@@ -51,7 +50,7 @@ export default function Profile() {
             <div className='h-20 md:h-32'>
                 {
                     addUser.cover_photo&&
-                    <ResponsiveImage src={addUser.cover_photo} className='w-full h-full object-cover' alt="" />
+                    <img src={addUser.cover_photo} className='w-full h-full object-cover' alt="" />
                 }
             </div>
                 <UserProfileInfo addPost={addPost} addUser={addUser} profileId={profileId} setShowEdit={setShowEdit}/>
@@ -88,7 +87,7 @@ export default function Profile() {
                                 {
                                     post.image_urls.map((image,index)=>(
                                         <Link className='relative group' target='_blank' to={image} key={index}>
-                                            <ResponsiveImage src={image} key={index} className='w-64 object-cover aspect-video' alt="" />
+                                            <img src={image} key={index} className='w-64 object-cover aspect-video' alt="" />
                                             <p className='absolute bottom-0 right-0 text-xs p-1 px-3 backdrop-blur-xl text-white group-hover:opacity-100 transition duration-200'>
                                                 posted {moment(post.createdAt).fromNow()}
                                             </p>

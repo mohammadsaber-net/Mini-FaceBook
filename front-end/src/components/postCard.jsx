@@ -2,11 +2,10 @@ import { useEffect, useState } from "react"
 import { BadgeCheck, Heart, MessageCircle, Share2 } from "lucide-react"
 import moment from "moment"
 import { useNavigate } from "react-router-dom"
-import { useSelector } from "react-redux"
 import api from "../api/axios.js";
 import { useAuth } from "@clerk/clerk-react"
 import toast from "react-hot-toast"
-import ResponsiveImage from "./responsiveImage.jsx"
+
 export default function PostCard({post,addUser}) {
     const navigate=useNavigate()
     const {getToken}=useAuth()
@@ -16,6 +15,7 @@ export default function PostCard({post,addUser}) {
     )
     const [likes, setLikes] = useState(post.likes_count || []);
     const currentUser=post.user
+    console.log("hello")
     const handleLikes=async()=>{
         try {
             const {data}=await api.post("/api/post/like",{postId:post._id},{
@@ -41,7 +41,7 @@ export default function PostCard({post,addUser}) {
     return (
     <div className="bg-white space-y-4 w-full max-w-2xl p-4 shadow rounded-xl">
       <div >
-        <ResponsiveImage onClick={()=>navigate(`/profile/${currentUser._id}`)} className="w-10 h-10 cursor-pointer rounded-full shadow" src={post.user&&currentUser.profile_picture} alt="" />
+        <img onClick={()=>navigate(`/profile/${currentUser._id}`)} className="w-10 h-10 cursor-pointer rounded-full shadow" src={post.user&&currentUser.profile_picture} alt="" />
         <div className="">
             <div onClick={()=>navigate(`/profile/${currentUser._id}`)} className="flex items-center cursor-pointer  space-x-1 ">
                 <span>
@@ -61,7 +61,7 @@ export default function PostCard({post,addUser}) {
         <div className="grid grid-cols-2 gap-2">
             {
                 post.image_url?.map((img,index)=>(
-                    <ResponsiveImage src={img} key={index} className={`w-full h-48 object-cover rounded-lg 
+                    <img src={img} key={index} className={`w-full h-48 object-cover rounded-lg 
                         ${post.image_url.length===1&&"col-span-2 h-auto"}`} alt="" />
                 ))
             }
