@@ -6,7 +6,7 @@ import { useAuth } from "@clerk/clerk-react"
 import api from "../api/axios.js"
 import toast from "react-hot-toast"
 import { fetchConnections } from "../redux/connections/connectionSlice.js"
-
+import ResponsiveImage from '../components/responsiveImage.jsx'
 function Connection(){
     const navigate=useNavigate()
     const {getToken}=useAuth()

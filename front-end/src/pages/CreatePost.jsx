@@ -6,7 +6,7 @@ import { useSelector } from "react-redux"
 import { useAuth } from "@clerk/clerk-react"
 import api from "../api/axios.js"
 import { useNavigate } from "react-router-dom"
-
+import ResponsiveImage from '../components/responsiveImage.jsx'
 function CreatePosts(){
     const navigate=useNavigate()
     const data=useSelector(state=>state.user?.user)

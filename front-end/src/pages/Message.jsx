@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom"
 import { dummyConnectionsData } from "../assets/assets.js"
 import { Eye, MessageSquare } from "lucide-react"
 import { useSelector } from "react-redux"
-
+import ResponsiveImage from '../components/responsiveImage.jsx'
 function Message(){
     const connection=useSelector(state=>state.connections.connections)
     const navigate=useNavigate()

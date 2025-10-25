@@ -9,6 +9,7 @@ import UserProfileInfo from '../components/UserProfileInfo.jsx'
 import ProfileModel from '../components/ProfileModel.jsx'
 import { useAuth } from '@clerk/clerk-react'
 import { useDispatch, useSelector } from 'react-redux'
+import ResponsiveImage from '../components/responsiveImage.jsx'
 import api from '../api/axios.js'
 import toast from 'react-hot-toast'
 export default function Profile() {
@@ -100,8 +101,7 @@ export default function Profile() {
 
                     </div>
                 }
-            
-        
+
       </div>
       {
         showEdit&&<ProfileModel setShowEdit={setShowEdit}/>

@@ -3,7 +3,7 @@ import { ArrowLeft, Sparkle, TextIcon, Upload } from 'lucide-react'
 import React, { useState } from 'react'
 import toast from 'react-hot-toast'
 import api from '../api/axios'
-
+import ResponsiveImage from './responsiveImage'
 function StoryModel({setShowModel,fetchStories}) {
     const bgColor=["red","blue","gray","green"]
     const [mode,setMode]=useState("text")

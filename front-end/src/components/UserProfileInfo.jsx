@@ -3,7 +3,7 @@ import moment from 'moment'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-
+import ResponsiveImage from './responsiveImage'
 export default function UserProfileInfo(param) {
   const {addPost,addUser,profileId,setShowEdit}=param
   const navigate=useNavigate()

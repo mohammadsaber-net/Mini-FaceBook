@@ -7,6 +7,7 @@ import { useAuth } from '@clerk/clerk-react'
 import api from '../api/axios.js'
 import { fetchUser } from "../redux/user/userSlice.js"
 import { useNavigate } from "react-router-dom"
+import ResponsiveImage from './responsiveImage'
 export default function UserCard(users) {
     const user=users.user
     const {getToken}=useAuth()

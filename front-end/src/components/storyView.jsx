@@ -1,6 +1,6 @@
 import { BadgeCent, BadgeCheck, X } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
-
+import ResponsiveImage from './responsiveImage'
 function StoryView({veiwStory,setveiwStory}) {
     const closeStory=()=>{
         setveiwStory(null)

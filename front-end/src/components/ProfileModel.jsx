@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { useAuth } from "@clerk/clerk-react"
 import { updateUser } from "../redux/user/userSlice.js"
 import toast from "react-hot-toast"
-
+import ResponsiveImage from './responsiveImage'
 export default function ProfileModel({setShowEdit}) {
     const dispatch=useDispatch()
     const {getToken}=useAuth()

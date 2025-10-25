@@ -7,6 +7,7 @@ import StoryView from "./storyView.jsx";
 import { useAuth } from "@clerk/clerk-react";
 import api from "../api/axios.js";
 import toast from "react-hot-toast";
+import ResponsiveImage from './responsiveImage'
 function StoriesBar() {
     const [story,setStory]=useState([])
     const [showModel,setShowModel]=useState(false)
