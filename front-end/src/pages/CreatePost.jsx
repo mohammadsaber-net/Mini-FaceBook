@@ -55,7 +55,7 @@ function CreatePosts(){
             </div>
             <div className="max-w-xl p-4 bg-white rounded-xl shadow-md space-y-4">
                 <div className="flex items-center gap-3">
-                    <img src={data.profile_picture} className="size-12" alt="" />
+                    <ResponsiveImage src={data.profile_picture} className="size-12" alt="" />
                     <div>
                         <h3 className="font-semibold ">
                             {data.full_name}

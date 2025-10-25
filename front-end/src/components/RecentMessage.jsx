@@ -45,7 +45,7 @@ export default function RecentMessage() {
         {message.map((mes,ind)=>{
             return(<Link to={`/messages/${mes.from_user_id._id}`} key={ind} className='flex group items-center p-1 hover:bg-blue-400 transition-all hover:text-white duration-200 mb-2 shadow'
             >
-                <img src={mes.profile_picture || assets.sample_profile} className='w-8 h-8 rounded-full' alt="" />
+                <ResponsiveImage src={mes.profile_picture || assets.sample_profile} className='w-8 h-8 rounded-full' alt="" />
                 <div className='w-full ms-2'>
                     <div className='flex justify-between'>
                         <p className='font-medium overflow-hidden'>{mes.from_user_id.full_name || "ali"}</p>

@@ -109,7 +109,7 @@ function Connection(){
                     {
                         dataArray.find((item)=>(item.label===currentTab)).value.map((user)=>(
                             <div key={user._id} className="w-full my-2 flex ga-5 bg-white shadow rounded-lg p-6">
-                                <img src={user.profile_picture} alt="" className="size-12 rounded-full shadow-md" />
+                                <ResponsiveImage src={user.profile_picture} alt="" className="size-12 rounded-full shadow-md" />
                                 <div className="flex-1">
                                     <p className="text-slate-600">{user.full_name}</p>
                                     <p className="text-slate-500">@{user.username}</p>

@@ -71,7 +71,7 @@ function ChatBox(){
         <div className="flex flex-col h-full pt-2">
             <div className="flex items-center gap-2 md:px-10 xl:pl-24 bg-gradient-to-r from-indigo-100
             to-purple-100 border-b border-gray-300">
-                <img src={user?.profile_picture} onClick={()=>navigate(`/profile/${user._id}`)} className="size-8 cursor-pointer rounded-full" alt="" />
+                <ResponsiveImage src={user?.profile_picture} onClick={()=>navigate(`/profile/${user._id}`)} className="size-8 cursor-pointer rounded-full" alt="" />
                 <div >
                     <p className="font-medium ">
                         {

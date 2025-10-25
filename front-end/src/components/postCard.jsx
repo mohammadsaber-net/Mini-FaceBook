@@ -6,6 +6,7 @@ import { useSelector } from "react-redux"
 import api from "../api/axios.js";
 import { useAuth } from "@clerk/clerk-react"
 import toast from "react-hot-toast"
+import ResponsiveImage from "./responsiveImage.jsx"
 export default function PostCard({post,addUser}) {
     const navigate=useNavigate()
     const {getToken}=useAuth()
@@ -40,7 +41,7 @@ export default function PostCard({post,addUser}) {
     return (
     <div className="bg-white space-y-4 w-full max-w-2xl p-4 shadow rounded-xl">
       <div >
-        <img onClick={()=>navigate(`/profile/${currentUser._id}`)} className="w-10 h-10 cursor-pointer rounded-full shadow" src={post.user&&currentUser.profile_picture} alt="" />
+        <ResponsiveImage onClick={()=>navigate(`/profile/${currentUser._id}`)} className="w-10 h-10 cursor-pointer rounded-full shadow" src={post.user&&currentUser.profile_picture} alt="" />
         <div className="">
             <div onClick={()=>navigate(`/profile/${currentUser._id}`)} className="flex items-center cursor-pointer  space-x-1 ">
                 <span>
@@ -60,7 +61,7 @@ export default function PostCard({post,addUser}) {
         <div className="grid grid-cols-2 gap-2">
             {
                 post.image_url?.map((img,index)=>(
-                    <img src={img} key={index} className={`w-full h-48 object-cover rounded-lg 
+                    <ResponsiveImage src={img} key={index} className={`w-full h-48 object-cover rounded-lg 
                         ${post.image_url.length===1&&"col-span-2 h-auto"}`} alt="" />
                 ))
             }

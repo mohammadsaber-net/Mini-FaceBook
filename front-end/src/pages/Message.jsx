@@ -19,7 +19,7 @@ function Message(){
                         connection.map((user,index)=>(
                             <div key={user._id} className="max-w-xl flex flex-wrap gap-5 p-6
                              bg-white shadow rounded-md">
-                                <img src={user.profile_picture} className="rounded-full mx-auto size-12" alt="" />
+                                <ResponsiveImage src={user.profile_picture} className="rounded-full mx-auto size-12" alt="" />
                                 <div className="flex-1 ">
                                     <p className="font-medium text-slate-700 ">
                                         {user.full_name}

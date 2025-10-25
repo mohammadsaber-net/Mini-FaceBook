@@ -6,7 +6,7 @@ function Login(){
     return(
         <div>
             <div className="flex container flex-col md:flex-row mx-auto py-5 min-h-screen">
-                <img src={assets.bgImage} alt="bgImage" className="absolute top-0 -z-10 left-0 w-full"/>
+                <img loading="lazy" src={assets.bgImage} alt="bgImage" className="absolute top-0 -z-10 left-0 w-full"/>
                 <div className="flex md:flex-col justify-between flex-row">
                     <div className="">
                         <FaFacebook className="text-blue-600 relative size-8 md:size-12" />
@@ -15,7 +15,7 @@ function Login(){
                     </div>
                     <div className="flex justify-between md:my-auto flex-col">
                         <div>
-                        <img src={assets.group_users} alt="group_users" className="h-6 object-contain sm:h-12"/>
+                        <img loading="lazy" src={assets.group_users} alt="group_users" className="h-6 object-contain sm:h-12"/>
                         </div>
                         <div>
                             <div className="flex">

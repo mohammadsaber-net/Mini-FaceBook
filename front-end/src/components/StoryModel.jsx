@@ -89,7 +89,7 @@ function StoryModel({setShowModel,fetchStories}) {
             {
                 mode==="media"&&preview&&(
                     media?.type.startsWith("image")?(
-                        <img src={preview} className='object-contain max-h-full'/>
+                        <ResponsiveImage src={preview} className='object-contain max-h-full'/>
                     ):(
                         <video src={preview} className='object-contain max-h-full'/>
                     )

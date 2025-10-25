@@ -49,7 +49,7 @@ export default function UserCard(users) {
     <div key={user._id} className='p-4 pt-6 flex max-w-64 bg-white flex-col justify-between rou-md
      border-gray-200 border'>
         <div className='text-center'>
-        <img src={user.profile_picture} className='size-8
+        <ResponsiveImage src={user.profile_picture} className='size-8
          rounded-full mx-auto shadow-md' alt="" />
          <p className='font-semibold mt-4 text-blue-600'>
             {user.full_name}
