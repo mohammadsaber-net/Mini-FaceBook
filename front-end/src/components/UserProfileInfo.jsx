@@ -1,13 +1,17 @@
-import { Calendar, MapPin, PenBox, Verified } from 'lucide-react'
+import { Calendar, MapPin, MessageCircle, PenBox, Verified } from 'lucide-react'
 import moment from 'moment'
 import React from 'react'
+import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 export default function UserProfileInfo(param) {
   const {addPost,addUser,profileId,setShowEdit}=param
+  const navigate=useNavigate()
+  const currentUser=useSelector(state=>state.user?.user)
   return (
     <div className='relative bg-white md:px-8 py-4 px-6'>
       <div className='flex flex-col md:flex-row items-start gap-6'>
-        <div className='size-32 border-4 border-white shadow-lg absolute rounded-full -top-16'>
+        <div className='size-32 border-4 border-white shadow-lg overflow-hidden absolute rounded-full -top-16'>
             <img src={addUser.profile_picture} className='absolute rounded-full z-20' alt="" />
             
         </div>
@@ -22,12 +26,14 @@ export default function UserProfileInfo(param) {
                                 </h2>
                                 <Verified className='text-blue-500 size-6'/>
                         </div>
-                        <p>{addUser.username?`@${addUser.username}`:"add a username"}</p>
+                        <p className='text-gray-500'>{addUser.username?`@${addUser.username}`:"add a username"}</p>
                     </div>
                     {
-                        !profileId && <button onClick={()=>setShowEdit(true)} className='flex  items-center gap-2 border border-gray-300 hover:bg-gray-50 py-2 px-4 rounded-lg font-medium transition-colors mt-4 md:mt-0 cursor-pointer'>
+                       currentUser._id === profileId? <button onClick={()=>setShowEdit(true)} className='flex  items-center gap-2 border border-gray-300 hover:bg-gray-50 py-2 px-4 rounded-lg font-medium transition-colors mt-4 md:mt-0 cursor-pointer'>
                           Edit
                           <PenBox />
+                        </button>:<button onClick={()=>navigate(`/messages/${profileId}`)} className='flex text-blue-600 items-center gap-2 border border-gray-300 hover:bg-gray-50 py-2 px-4 rounded-lg font-medium transition-colors mt-4 md:mt-0 cursor-pointer' >
+                          Message <MessageCircle />
                         </button>
                     }
                 </div>
@@ -41,7 +47,7 @@ export default function UserProfileInfo(param) {
                       }
                     </span>
                     <span className='flex items-center gap-1'>
-                      <Calendar className='size-4'/> Joined
+                      <Calendar className='size-4'/> Joined  
                       {
                       moment(addUser.createdAt).fromNow()
                     }

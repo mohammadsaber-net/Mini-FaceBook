@@ -4,14 +4,14 @@ import { assets, dummyUserData } from '../assets/assets'
 import { useClerk, UserButton } from '@clerk/clerk-react'
 import { CirclePlus, LogOut } from 'lucide-react'
 import MenuItems from './menuItems'
-import { FaFacebook, FaFacebookF } from 'react-icons/fa'
+import { useSelector } from 'react-redux'
 export default function SideBar({sideOpen,setSideOpen}) {
     const navigate=useNavigate()
-    const user=dummyUserData
+    const user=useSelector(state=>state.user?.user)
     const {signOut}=useClerk()
   return (
         <div className="relative ">
-    <div className={`w-44 absolute h-screen top-0 mt-8 left-0 z-30 sm:w-48 pt-4 sm:static border-gray-300 border-e-2 bg-white ${sideOpen?"-translate-x-0":"max-sm:-translate-x-full"}  transition-all duration-300 ease-in-out`}>
+    <div className={`w-44 absolute h-[calc(100vh-32px)] top-0 mt-8 left-0 z-30 sm:w-48 pt-4 sm:static border-gray-300 border-e-2 bg-white ${sideOpen?"-translate-x-0":"max-sm:-translate-x-full"}  transition-all duration-300 ease-in-out`}>
       <div className="w-full">
         {/* <div className='text-center'>
         <FaFacebook onClick={()=>navigate("/")} className='size-8 m-auto text-blue-700 mb-2 md:mb-4 ml-7 cursor-pointer' />

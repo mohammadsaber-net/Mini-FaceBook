@@ -2,7 +2,6 @@ import { BadgeCent, BadgeCheck, X } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 
 function StoryView({veiwStory,setveiwStory}) {
-    console.log("ve====",veiwStory)
     const closeStory=()=>{
         setveiwStory(null)
     }

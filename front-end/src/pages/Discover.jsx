@@ -1,26 +1,49 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {assets, dummyConnectionsData} from "../assets/assets.js"
 import { Search } from "lucide-react"
 import UserCard from "../components/UserCard.jsx"
 import Loading from "../components/Loading.jsx"
+import { useAuth } from "@clerk/clerk-react"
+import { useDispatch } from "react-redux"
+import toast from "react-hot-toast"
+import api from "../api/axios.js"
+import { fetchUser } from "../redux/user/userSlice.js"
 function Discover(){
     const [input,setInput]=useState("")
-    const [users,setUsers]=useState(dummyConnectionsData)
+    const [users,setUsers]=useState([])
     const [loading,setLoading]=useState(false)
+    const {getToken}=useAuth()
+    const dispatch=useDispatch()
     const [searchPlace,setSearchplace]=useState(false)
     const handleSearch=async(e)=>{
         if(e.key==="Enter"){
-            console.log(e.key)
-            setUsers([])
-            setLoading(true)
-            setTimeout(() => {
-               setUsers(dummyConnectionsData)
-               setLoading(false) 
-            }, 1000);
+            try {
+                setLoading(true)
+                setUsers([])
+                const {data}=await api.post("/api/user/discover",{input},{
+                    headers:{Authorization:`Bearer ${await getToken()}`}
+                })
+                console.log(data)
+                if(data.success){
+                    setUsers(data.users)
+                }else{
+                    toast.error(data.message)
+                }
+            } catch (error) {
+                toast.error(error.message)
+            }
+            setInput("")
+            setLoading(false)
         }
     }
+    useEffect(()=>{
+        getToken().then(token=>{
+            dispatch(fetchUser(token))
+        })
+    },[dispatch,getToken])
+
     return(
-        <div className="min-h-screen bg-gray-100">
+        <div className="min-h-[calc(100vh-32px)] bg-gray-100">
             <div className="mx-auto p-6 max-w-6xl">
                 <div>
                     <h2 className="font-bold text-3xl text-slate-900 mb-2">

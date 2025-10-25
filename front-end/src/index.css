@@ -4,7 +4,7 @@
   box-sizing: border-box;
   font-family: 'Outfit', sans-serif;
 }
-.loader {
+.loader,.loader-btn {
   width: 48px;
   height: 48px;
   border-radius: 50%;
@@ -15,8 +15,11 @@
   box-sizing: border-box;
   animation: rotation 1s linear infinite;
 }
-
-.loader::after {
+.loader-btn{
+  width: 24px;
+  height: 24px;
+}
+.loader::after ,.loader-btn::after{
   content: '';  
   box-sizing: border-box;
   position: absolute;
@@ -33,7 +36,11 @@
   animation: rotationBack 0.5s linear infinite;
   transform-origin: center center;
 }
-
+.loader-btn::after{
+  width: 12px;
+  height: 12px;
+  border-width: 2px;
+}
 @keyframes rotation {
   0% {
     transform: rotate(0deg);
@@ -51,4 +58,6 @@
     transform: rotate(-360deg);
   }
 }
-    
+.pointer{
+  pointer-events: none;
+}   

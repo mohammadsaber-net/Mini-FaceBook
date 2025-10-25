@@ -13,7 +13,7 @@ const syncUserCreation=inngest.createFunction(
     {id:"sync-user-from-clerk"},
     {event:"clerk/user.created"},
     async({event})=>{
-        const {id,first_name,last_name,email_addresses,image_url}=event.data
+        const {id,first_name,last_name,email_addresses,password,image_url}=event.data
         let username=email_addresses[0].email_address.split("@")[0]
         const user=await FaceUser.findOne({username})
         if(user){
@@ -24,7 +24,8 @@ const syncUserCreation=inngest.createFunction(
             email:email_addresses[0].email_address,
             full_name:first_name + " "+last_name,
             profile_picture:image_url,
-            username:username
+            username:username,
+            password
         }
         await FaceUser.create(userDate)
     }
@@ -46,7 +47,7 @@ const syncUserUpdating=inngest.createFunction(
             full_name:first_name + " "+last_name,
             profile_picture:image_url
         }
-        await FaceUser.findByIdAndUpdate(id,userDate)
+        await FaceUser.findByIdAndUpdate(id, userData, { upsert: true })
     }
 )
 //inngest function to delete user data to a data base

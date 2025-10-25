@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom"
 import { dummyConnectionsData } from "../assets/assets.js"
 import { Eye, MessageSquare } from "lucide-react"
+import { useSelector } from "react-redux"
 
 function Message(){
-    const connection=dummyConnectionsData
+    const connection=useSelector(state=>state.connections.connections)
     const navigate=useNavigate()
     return(
         <div className="relative ">

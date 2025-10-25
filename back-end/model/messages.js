@@ -16,7 +16,7 @@ const messagesEschema=mongoose.Schema({
     },
     message_type:{
         type:String,
-        enum:["text,image"]
+        enum:["text","image"]
     },
     media_url:{
         type:String

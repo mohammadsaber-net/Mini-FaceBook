@@ -5,9 +5,10 @@ import { useState } from "react"
 import { Outlet, useNavigate } from "react-router-dom"
 import SideBar from "../components/sideBar.jsx"
 import { FaFacebook } from "react-icons/fa"
+import { useSelector } from "react-redux"
 
 function LayOut(){
-    const user=dummyUserData
+    const user=useSelector(state=>state.user?.user)
     const navigate=useNavigate()
     const [sideOpen,setSideOpen]=useState()
     return user?(

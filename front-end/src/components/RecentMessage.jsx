@@ -1,27 +1,54 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { assets, dummyMessagesData } from '../assets/assets'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
-
+import { useAuth, useUser } from '@clerk/clerk-react'
+import api from '../api/axios'
+import toast from "react-hot-toast"
 export default function RecentMessage() {
     const [message,setMessage]=useState([])
+    const {user}=useUser()
+    const {getToken}=useAuth()
     const fetchMessage=async()=>{
-        setMessage(dummyMessagesData)
+        try {
+          const {data}=await api.get("/api/message/messages",{
+            headers:{Authorization:`Bearer ${await getToken()}`}
+          })
+          if(data.success){
+            const groupedMessage=data.messages.reduce((acc,message)=>{
+              const senderId=message.from_user_id._id
+              if(!acc[senderId]|| new Date(message.createdAt) > new Date ((acc[senderId].createdAt))){
+                acc[senderId]=message
+              }
+              return acc
+            },{})
+            const sortedMessage=Object.values(groupedMessage).sort((a,b)=>{
+              new Date(b.createdAt) - new Date(a.createdAt)
+            })
+            setMessage(sortedMessage)
+          }else{
+            toast.error(data.message)
+          }
+        } catch (error) {
+          toast.error(error.message) 
+        }
     }
     useEffect(()=>{
-        fetchMessage()
+        if(user){
+          fetchMessage()
+        }
     },[])
   return (
-    <div className='w-fit min-h-20 rounded-md shadow text-xs p-1 text-slate-800'>
+    <div className='w-full min-h-20 rounded-md shadow text-xs p-1 text-slate-800'>
       <h3 className='font-semibold text-slate-800 mb-4'>recent messages</h3>
       <div className='flex flex-col max-h-36 no-scrollbar overflow-y-scroll'>
         {message.map((mes,ind)=>{
-            return(<Link to={`/messages/${mes._id}`} key={ind} className='flex group items-center p-1 hover:bg-blue-400 transition-all hover:text-white duration-200 mb-2 shadow'
+            return(<Link to={`/messages/${mes.from_user_id._id}`} key={ind} className='flex group items-center p-1 hover:bg-blue-400 transition-all hover:text-white duration-200 mb-2 shadow'
             >
                 <img src={mes.profile_picture || assets.sample_profile} className='w-8 h-8 rounded-full' alt="" />
                 <div className='w-full ms-2'>
                     <div className='flex justify-between'>
-                        <p className='font-medium w-4 overflow-hidden'>{mes.from_user_id.full_name || "ali"}</p>
+                        <p className='font-medium overflow-hidden'>{mes.from_user_id.full_name || "ali"}</p>
                         <p className='text-[8px]'>{moment(mes.createdAt).fromNow()}</p>
                     </div>
                     <div className='flex justify-between'>

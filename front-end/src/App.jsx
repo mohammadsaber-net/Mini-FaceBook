@@ -1,7 +1,6 @@
-import {Route , Routes } from "react-router-dom"
+import {Route , Routes, useLocation } from "react-router-dom"
 import Feed from "./pages/Feed"
 import Login from "./pages/Login"
-import Message from "./pages/message"
 import CreatePosts from "./pages/CreatePost"
 import Discover from "./pages/Discover"
 import LayOut from "./pages/LayOut"
@@ -10,17 +9,48 @@ import { useUser,useAuth } from "@clerk/clerk-react"
 import Connection from "./pages/Connection"
 import {Toaster} from "react-hot-toast"
 import ChatBox from "./pages/ChatPox"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
+import {useDispatch} from "react-redux"
+import { fetchUser } from "./redux/user/userSlice"
+import { fetchConnections } from "./redux/connections/connectionSlice"
+import Message from "./pages/Message"
+import { addMessages } from "./redux/messages/messages"
 
 function App() {
   const {user}=useUser() 
   const {getToken}= useAuth()
+  const {pathname}=useLocation()
+  const phathnameRef=useRef(pathname)
+  const dispatch=useDispatch()
+  useEffect(()=>{
+    const fetchData=async()=>{
+      if(user){
+      const token=await getToken()
+      dispatch(fetchUser(token))
+      dispatch(fetchConnections(token))
+    }
+    }
+    fetchData()
+  },[user,getToken,dispatch])
+  useEffect(()=>{
+    phathnameRef.current=pathname
+  },[pathname])
   useEffect(()=>{
     if(user){
-      console.log("user =>>>> ",user)
-      getToken().then((token)=>console.log(token))
+      const eventSource=new EventSource(import.meta.env.VITE_BASE_URL + "/api/message/" + user.id)
+      eventSource.onmessage=(event)=>{
+        const message=JSON.parse(event.data)
+        if(pathname.current===("/messages/"+message.from_user_id)){
+          dispatch(addMessages(message))
+        }else{
+
+        }
+      }
+      return ()=>{
+        eventSource.close()
+      }
     }
-  },[user])
+  },[user,dispatch])
   return (
     <>
     <Toaster />
@@ -28,7 +58,7 @@ function App() {
     <Route path="/" element={!user?<Login />:<LayOut />}>
       <Route index element={<Feed />}/>
       <Route path="/messages" element={<Message />}/>
-      <Route path="/messages/:usedId" element={<ChatBox />}/>
+      <Route path="/messages/:userId" element={<ChatBox />}/>
       <Route path="/connections" element={<Connection />}/>
       <Route path="/createPost" element={<CreatePosts />}/>
       <Route path="/discover" element={<Discover />}/>

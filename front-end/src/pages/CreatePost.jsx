@@ -2,14 +2,45 @@ import { useState } from "react"
 import { dummyUserData } from "../assets/assets.js"
 import { Image, X } from "lucide-react"
 import {toast} from "react-hot-toast"
+import { useSelector } from "react-redux"
+import { useAuth } from "@clerk/clerk-react"
+import api from "../api/axios.js"
+import { useNavigate } from "react-router-dom"
 
 function CreatePosts(){
-    const data=dummyUserData
+    const navigate=useNavigate()
+    const data=useSelector(state=>state.user?.user)
     const [content,setContent]=useState("")
     const [image,setImage]=useState([])
     const [loading,setLoading]=useState(false)
+    const {getToken}=useAuth()
     const handleSubmit=async()=>{
-
+        setLoading(true)
+        if(image.length<=0 && !content){
+            toast.error("please add at least one image or text")
+        }else{
+            const postType=image.length > 0&&content?"image_with_text":image.length>0?"image":"text"
+        try {
+            const formData=new FormData()
+            formData.append("content",content)
+            formData.append("post_type",postType)
+            image.map(img=>{
+                formData.append("image",img)
+            })
+            const {data}=await api.post("/api/post/add",formData,{
+                headers:{Authorization:`Bearer ${await getToken()}`}
+            })
+            if(data.success){
+                navigate("/")
+                toast.success("post added")
+            }else{
+                toast.error(data.message)
+            }
+        } catch (error) {
+            toast.error(error.message)
+        }
+        }
+        setLoading(false)
     }
     return(
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
@@ -56,9 +87,7 @@ function CreatePosts(){
                         <input type="file" id="images" accept="image/*" hidden multiple onChange={(e)=>setImage([...image,...e.target.files])}/>
                         <button onClick={()=>toast.promise(
                             handleSubmit(),{
-                            loading:"uploading",
-                            error:<p>Post not added</p>,
-                            success:<p>Post Added</p>
+                            loading:"uploading"
                                 }
                             )} className="flex-cent text-sm bg-gradient-to-r from-indigo-500 
                             to-purple-600 hover:from-indigo-600 active:scale-95 transition 

@@ -6,15 +6,16 @@ import { Post } from "../model/posts.js"
 export const getUserData=async(req,res)=>{
     try {
         const {userId}=req.auth()
-        const user=await FaceUser.findById(userId)
+        
+        const value=await FaceUser.findById(userId)
         return res.status(200).json({
                 success:true,
-                data:user
+                value
             })
     } catch (error) {
         return res.status(500).json({
                 success:false,
-                data:null
+                value:null
             })
     }
 }
@@ -29,8 +30,8 @@ export const updateUserData=async(req,res)=>{
         location = location || tempUser.location
         full_name = full_name || tempUser.full_name
         if(username !== tempUser.username){
-            const user=await FaceUser.findOne({username})
-            if(user){
+            const value=await FaceUser.findOne({username})
+            if(value){
                 return res.status(400).json({
                     success: false,
                     message: "Username already taken",
@@ -51,7 +52,7 @@ export const updateUserData=async(req,res)=>{
                 transformation:[
                     {quality:"auto"},
                     {format:"webp"},
-                    {width:"1280"},
+                    {width:"512"},
                 ]
             })
             updatedData.profile_picture=url
@@ -67,7 +68,7 @@ export const updateUserData=async(req,res)=>{
                 transformation:[
                     {quality:"auto"},
                     {format:"webp"},
-                    {width:"512"},
+                    {width:"1280"},
                 ]
             })
             updatedData.cover_photo=url
@@ -75,12 +76,14 @@ export const updateUserData=async(req,res)=>{
         const updating=await FaceUser.findByIdAndUpdate(userId,updatedData,{new:true})
         return res.status(200).json({
             success:true,
-            user:updating
+            value:updating,
+            message:"profile updated successfully"
         })
     } catch (error) {
         return res.status(500).json({
                 success:false,
                 message:error.message,
+                value:null,
             })
     }
 }
@@ -97,6 +100,12 @@ export const discoverUsers=async(req,res)=>{
         ]
     })
     const filterAllUsers=allUsers.filter(user=>user._id !== userId)
+    if(filterAllUsers.length===0){
+        return res.status(200).json({
+        success:false,
+        message:"there are no user with that name"
+    })
+    }
     return res.status(200).json({
         success:true,
         users:filterAllUsers
@@ -165,8 +174,9 @@ export const unFollowUser=async(req,res)=>{
 export const getUserProfile=async(req,res)=>{
     try {
         const {userId}=req.auth()
-        const profile=await FaceUser.findById(userId).populate("followers following connections")
-        const posts=await Post.find({user:userId}).populate("likes_count")
+        const {id}=req.body
+        const profile=await FaceUser.findById(id).populate("followers following connections")
+        const posts=await Post.find({user:id}).populate("likes_count user").sort({createdAt:-1})
         res.status(200).json({
             success:true,
             profile,

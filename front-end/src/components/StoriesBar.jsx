@@ -4,16 +4,31 @@ import { Plus } from "lucide-react"
 import moment from "moment";
 import StoryModel from "./StoryModel.jsx"
 import StoryView from "./storyView.jsx";
+import { useAuth } from "@clerk/clerk-react";
+import api from "../api/axios.js";
+import toast from "react-hot-toast";
 function StoriesBar() {
     const [story,setStory]=useState([])
     const [showModel,setShowModel]=useState(false)
     const [veiwStory,setveiwStory]=useState(null)
-    const fetchStories=()=>{
-        setStory(dummyStoriesData)
+    const {getToken}=useAuth()
+    const fetchStories=async()=>{
+        try {
+            const {data}= await api.get("/api/story/get",
+                {headers:{Authorization: `Bearer ${await getToken()}`}}
+            )
+            if(data.success){
+                setStory(data.stories)
+            }else{
+                toast.error(data.message)
+            }
+        } catch (error) {
+            toast.error(error.message)
+        }
     }
     useEffect(()=>{
         fetchStories()
-    })
+    },[])
   return (
     <div className=" overflow-x-auto  w-[calc(100vw-150px)] no-scrollbar sm:w-[calc(100vw-480px)]  min-w-40 relative ">
       <div className="flex gap-4 pb-5">
@@ -28,7 +43,7 @@ function StoriesBar() {
                 <p className="text-sm font-medium text-slate-800 text-center">create story</p>
             </div>
         </div>
-        {story.map((st,index)=>{
+        {story?.map((st,index)=>{
         return(
             <div onClick={()=>setveiwStory(st)} key={index} className={`relative rounded-lg bg-gradient-to-r min-w-20 md:min-w-36 overflow-hidden min-h-28 md:min-h-40 p-1 me-0.5 duration-200 cursor-pointer transition-all`}>
                 <img src={st.user.profile_picture} className="absolute z-10 size-8 rounded-full top-2 left-2"/>

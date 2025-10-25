@@ -13,16 +13,20 @@ const storyEschema=mongoose.Schema({
     },
     media_type:{
         type:String,
-        enum:["text","image","text_with_image"],
+        enum:["text","image","video"],
         required:true
     },
     views_count:{
-        type:String,
-        ref:"FaceUser"
-      },
+        type:Number,
+        ref:"FaceUser",
+        default:0
+    },
       background_color: {
         type:String,
         required:true
-      }
+    },
+    media:{
+        type:String
+    }
 },{timestamps:true,minimize:false})
 export const Story=mongoose.model("FaceStory", storyEschema)

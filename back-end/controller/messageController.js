@@ -1,7 +1,6 @@
 import { imagekit } from "../configs/imagekit.js"
 import fs from "fs"
 import { Message } from "../model/messages.js"
-import { sourceMapsEnabled } from "process"
 
 const connections={}
 export const sseController=(req,res)=>{
@@ -80,7 +79,7 @@ export const getChatMessages=async(req,res)=>{
             {to_user_id:messageId,from_user_id:userId}
         ]}
         ).sort({createdAt:-1})
-        await Message.updateMany({from_user_id:to_user_id,to_user_id:userId}
+        await Message.updateMany({from_user_id:messageId,to_user_id:userId}
             ,{seen:true}
         )
         res.json({success:true,message})
@@ -94,14 +93,16 @@ export const getChatMessages=async(req,res)=>{
 export const getUserRecentMessages=async(req,res)=>{
     try {
         const {userId}=req.auth()
-        const messages=await Message.findById({
-        $or: [
-            { from_user_id: userId },
-            { to_user_id: userId }
-        ]
+        const messages=await Message.find({
+            to_user_id: userId
+        // $or: [
+        //     { from_user_id: userId },
+        //     { to_user_id: userId }
+        // ]
         }).populate("to_user_id from_user_id").sort({createdAt:-1})
-            res.json({success:true,messages})
+        res.status(200).json({success:true,messages})
     } catch (error) {
+        console.log(error)
         return res.status(500).json({
             success:false,
             message:error.message

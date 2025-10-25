@@ -8,16 +8,14 @@ const postsEschema=mongoose.Schema({
     content:{
         type:String,
     },
-    image_url:{
-        type:String,
-    },
+    image_url:[String],
     post_type:{
         type:String,
-        enum:["text","image","video"],
+        enum:["text","image","image_with_text"],
         required:true
     },
     likes_count:{
-        type:String,
+        type:[String],
         ref:"FaceUser"
       }
 },{timestamps:true,minimize:false})

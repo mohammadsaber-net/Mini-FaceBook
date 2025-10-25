@@ -7,19 +7,42 @@ import moment from 'moment'
 import Loading from '../components/Loading.jsx'
 import UserProfileInfo from '../components/UserProfileInfo.jsx'
 import ProfileModel from '../components/ProfileModel.jsx'
+import { useAuth } from '@clerk/clerk-react'
+import { useDispatch, useSelector } from 'react-redux'
+import api from '../api/axios.js'
+import toast from 'react-hot-toast'
 export default function Profile() {
     const {profileId}=useParams()
     const [addPost,setAddPost]=useState([])
     const [addUser,setAddUser]=useState(null)
     const [activeTab,setActiveTab]=useState("addPost")
     const [showEdit,setShowEdit]=useState(false)
-    const fetchUser=async()=>{
-        setAddPost(dummyPostsData)
-        setAddUser(dummyUserData)
+    const currentUser=useSelector(state=>state.user?.user)
+    const {getToken}=useAuth()
+    const fetchUser=async(id)=>{
+        const token=await getToken()
+        try {
+            const {data}=await api.post("/api/user/profiles",{id},{
+                headers:{Authorization:`Bearer ${token}`}
+            })
+            if(data.success){
+                setAddUser(data.profile)
+                setAddPost(data.posts)
+                toast.success(data.message)
+            }else{
+                toast.error(data.message)
+            }
+        } catch (error) {
+            toast.error(error.message)
+        }
     }
     useEffect(()=>{
-        fetchUser()
-    },[])
+        if(profileId){
+            fetchUser(profileId)
+        }else{
+            fetchUser(currentUser._id)
+        }
+    },[profileId,currentUser])
   return addUser?(
     <div className='relative overflow-y-scroll p-6'>
       <div className='max-w-3xl mx-auto'>
@@ -48,8 +71,9 @@ export default function Profile() {
                     activeTab === "addPost"&&
                     <div className='flex-col items-center gap-6 flex '>     
                        {addPost.map((post)=>{
+                        console.log(post)
                         return(
-                            <PostCard key={post._id} post={post} />
+                            <PostCard key={post._id} addUser={addUser} post={post} />
                         )})
                         }
                     </div>
