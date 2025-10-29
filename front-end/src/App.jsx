@@ -15,6 +15,7 @@ import { fetchUser } from "./redux/user/userSlice"
 import { fetchConnections } from "./redux/connections/connectionSlice"
 import Message from "./pages/Message"
 import { addMessages } from "./redux/messages/messages"
+import Sponsore from "./components/sponsore"
 
 function App() {
   const {user}=useUser() 
@@ -60,6 +61,7 @@ function App() {
       <Route path="/messages" element={<Message />}/>
       <Route path="/messages/:userId" element={<ChatBox />}/>
       <Route path="/connections" element={<Connection />}/>
+      <Route path="/sponsore" element={<Sponsore />}/>
       <Route path="/createPost" element={<CreatePosts />}/>
       <Route path="/discover" element={<Discover />}/>
       <Route path="/profile" element={<Profile />}/>

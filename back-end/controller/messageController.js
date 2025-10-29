@@ -94,7 +94,8 @@ export const getUserRecentMessages=async(req,res)=>{
     try {
         const {userId}=req.auth()
         const messages=await Message.find({
-            to_user_id: userId
+            to_user_id: userId,
+            seen:false
         // $or: [
         //     { from_user_id: userId },
         //     { to_user_id: userId }

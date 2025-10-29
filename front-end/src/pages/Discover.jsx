@@ -43,7 +43,7 @@ function Discover(){
     },[dispatch,getToken])
 
     return(
-        <div className="min-h-[calc(100vh-32px)] bg-gray-100">
+        <div className="min-h-[calc(100vh-32px)] mt-16 sm:mt-4 bg-gray-100">
             <div className="mx-auto p-6 max-w-6xl">
                 <div>
                     <h2 className="font-bold text-3xl text-slate-900 mb-2">

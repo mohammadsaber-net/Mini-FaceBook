@@ -44,10 +44,10 @@ export default function Profile() {
         }
     },[profileId,currentUser])
   return addUser?(
-    <div className='relative overflow-y-scroll p-6'>
+    <div className='relative overflow-y-scroll mt-10 sm:mt-4 p-6'>
       <div className='max-w-3xl mx-auto'>
         <div className='rounded-2xl  bg-gradient-to-r from-indigo-200 via-purple-200 to-pink-200 shadow overflow-hidden'>
-            <div className='h-20 md:h-32'>
+            <div className='h-32 sm:h-48'>
                 {
                     addUser.cover_photo&&
                     <img src={addUser.cover_photo} className='w-full h-full object-cover' alt="" />

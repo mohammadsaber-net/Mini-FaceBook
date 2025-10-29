@@ -1,6 +1,6 @@
 
 import { Link, NavLink} from 'react-router-dom'
-import { Home,MessageCircle,Users,Search,UserIcon } from 'lucide-react'
+import { Home,MessageCircle,Users,Search,UserIcon, ShoppingBasketIcon } from 'lucide-react'
 import { useSelector } from 'react-redux'
 
 export default function MenuItems() {
@@ -29,6 +29,10 @@ export default function MenuItems() {
           `flex gap-2 px-2 py-1 rounded-2xl transition-all duration-300 
           hover:bg-gray-200 ${isActive ? "bg-gray-300 text-indigo-600" : ""}`
         }  to={`/profile/${currentUser._id}`}><UserIcon /> profile</NavLink>
+      <NavLink className={({ isActive }) =>
+          `flex gap-2 px-2 py-1 rounded-2xl transition-all duration-300 
+          hover:bg-gray-200 ${isActive ? "bg-gray-300 text-indigo-600" : ""}`
+        }  to={`/sponsore`}><ShoppingBasketIcon /> Market place</NavLink>
     </div>
   )
 }

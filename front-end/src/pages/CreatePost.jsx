@@ -1,14 +1,15 @@
 import { useState } from "react"
-import { dummyUserData } from "../assets/assets.js"
 import { Image, X } from "lucide-react"
 import {toast} from "react-hot-toast"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useAuth } from "@clerk/clerk-react"
 import api from "../api/axios.js"
 import { useNavigate } from "react-router-dom"
+import { setShowPost } from "../redux/models/showModels.js"
 
 function CreatePosts(){
     const navigate=useNavigate()
+    const dispatch=useDispatch()
     const data=useSelector(state=>state.user?.user)
     const [content,setContent]=useState("")
     const [image,setImage]=useState([])
@@ -33,6 +34,7 @@ function CreatePosts(){
             if(data.success){
                 navigate("/")
                 toast.success("post added")
+                dispatch(setShowPost(false))
             }else{
                 toast.error(data.message)
             }
@@ -43,29 +45,29 @@ function CreatePosts(){
         setLoading(false)
     }
     return(
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
-        <div className="max-w-6xl mx-auto p-6">
-            <div className="mb-6">
-                <h2 className="text-2xl bg-white text-slate-900 mb-2">
+    <div className="fixed top-0 left-0 right-0 z-1000 bottom-0 flex-cent bg-black/10">        
+        <div className="max-w-6xl relative  rounded-xl bg-white p-6 shadow-md mx-auto w-96">
+        <div onClick={()=>dispatch(setShowPost(false))} className="absolute Z-10 text-gray-600 size-10 bg-gray-100 rounded-full flex-cent hover:bg-gray-200 transition top-4 right-4 cursor-pointer">
+            <X />
+        </div>
+            <div className="border-b border-gray-300 text-center pb-2">
+                <h2 className="text-2xl text-slate-900">
                     Create Post
                 </h2>
-                <p className="text-slate-600">
-                    Share your thoughts with world
-                </p>
             </div>
-            <div className="max-w-xl p-4 bg-white rounded-xl shadow-md space-y-4">
-                <div className="flex items-center gap-3">
-                    <img src={data.profile_picture} className="size-12" alt="" />
+            <div className="max-w-xl p-2 bg-white space-y-4">
+                <div className="flex items-center justify-end gap-3">
                     <div>
-                        <h3 className="font-semibold ">
+                        <h3 className="text-gray-700 ">
                             {data.full_name}
                         </h3>
                         <p className="text-sm text-gray-500 ">
                             @{data.username}
                         </p>
                     </div>
+                    <img src={data.profile_picture} className="size-12 rounded-full" alt="" />
                 </div>
-                <textarea name="" className="w-full resize-none max-h-20 text-sm outline-none placeholder-gray-400" id="" placeholder="what's happeing" onChange={(e)=>setContent(e.target.value)} value={content}></textarea>
+                <textarea name="" className="w-full resize-none h-22 overflow-y-auto text-sm outline-none placeholder-gray-400" id="" placeholder="what's happeing" onChange={(e)=>setContent(e.target.value)} value={content}></textarea>
                 {
                     image.length > 0 && <div className="flex flex-wrap gap-2 p-2">
                         {
@@ -80,21 +82,26 @@ function CreatePosts(){
                         }
                     </div>
                 }
-                <div className="flex items-center justify-between pt-3 border-t text-gray-300">
-                    <label htmlFor="images" className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition cursor-pointer">
+                <div className="flex justify-around align-center p-2 border border-gray-300">
+                    <label htmlFor="images" className="flex items-center gap-2 text-sm text-green-500 hover:text-green-600 transition cursor-pointer">
                         <Image className="size-6 "/>  
                     </label>
-                        <input type="file" id="images" accept="image/*" hidden multiple onChange={(e)=>setImage([...image,...e.target.files])}/>
-                        <button onClick={()=>toast.promise(
+                    <input type="file" id="images" accept="image/*" hidden multiple onChange={(e)=>setImage([...image,...e.target.files])}/>
+                    <div className="text-gray-700">
+                    add to your post    
+                    </div>  
+                 </div>
+                 <div className="flex-cent">
+                    <button disabled={(image.length === 0 && content.length === 0) || loading} onClick={()=>toast.promise(
                             handleSubmit(),{
                             loading:"uploading"
                                 }
-                            )} className="flex-cent text-sm bg-gradient-to-r from-indigo-500 
+                            )} className={`flex-cent text-sm bg-gradient-to-r from-indigo-500 
                             to-purple-600 hover:from-indigo-600 active:scale-95 transition 
                             text-white font-medium px-8 py-2 rounded-md cursor-pointer 
-                            hover:to-purple-700" disabled={loading} >
-                                Puplish post 
-                        </button>
+                            hover:to-purple ${(image.length === 0 && content.length === 0) || loading?"opacity-50 pointer-events-none":""}`} >
+                                Publish post
+                            </button>
                  </div>
             </div>
         </div>  

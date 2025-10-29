@@ -1,37 +1,26 @@
-import { useEffect, useState } from "react"
-import { dummyStoriesData } from "../assets/assets.js"
+import { use, useEffect, useState } from "react"
 import { Plus } from "lucide-react"
 import moment from "moment";
-import StoryModel from "./StoryModel.jsx"
 import StoryView from "./storyView.jsx";
 import { useAuth } from "@clerk/clerk-react";
-import api from "../api/axios.js";
-import toast from "react-hot-toast";
 import ResponsiveImage from "./responsiveImage.jsx";
+import { useDispatch, useSelector } from "react-redux";
+import { setShowModel } from "../redux/models/showModels.js";
+import { fetchStories } from "../redux/stories/story.js";
 function StoriesBar() {
-    const [story,setStory]=useState([])
-    const [showModel,setShowModel]=useState(false)
     const [veiwStory,setveiwStory]=useState(null)
     const {getToken}=useAuth()
-    const fetchStories=async()=>{
-        try {
-            const {data}= await api.get("/api/story/get",
-                {headers:{Authorization: `Bearer ${await getToken()}`}}
-            )
-            if(data.success){
-                setStory(data.stories)
-            }else{
-                toast.error(data.message)
-            }
-        } catch (error) {
-            toast.error(error.message)
-        }
+    const dispatch=useDispatch()
+    const fetchstory=async()=>{
+        const token=await getToken()
+        dispatch(fetchStories(token))
     }
     useEffect(()=>{
-        fetchStories()
+        fetchstory()
     },[])
+    const story=useSelector(state=>state.stories.story)
   return (
-    <div className=" overflow-x-auto  w-[calc(100vw-150px)] no-scrollbar sm:w-[calc(100vw-250px)]  min-w-40 relative ">
+    <div className=" overflow-x-auto w-[calc(100vw-50px)] md:w-[calc(100vw-300px)] relative ">
       <div className="flex gap-4 pb-5">
          
         <div onClick={()=>setShowModel(true)} className="min-w-30
@@ -70,7 +59,6 @@ function StoriesBar() {
             </div>
         )})}
       </div>
-      {showModel&& <StoryModel setShowModel={setShowModel} fetchStories={fetchStories}/>}
       {veiwStory&& <StoryView setveiwStory={setveiwStory} veiwStory={veiwStory}/>}
     </div>
   )

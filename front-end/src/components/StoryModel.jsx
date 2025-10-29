@@ -4,11 +4,15 @@ import React, { useState } from 'react'
 import toast from 'react-hot-toast'
 import api from '../api/axios'
 import ResponsiveImage from "./responsiveImage.jsx";
-function StoryModel({setShowModel,fetchStories}) {
+import { useDispatch } from 'react-redux'
+import { setShowModel } from '../redux/models/showModels.js'
+import { fetchStories } from '../redux/stories/story.js'
+function StoryModel() {
     const bgColor=["red","blue","gray","green"]
     const [mode,setMode]=useState("text")
     const [backg,setBackg]=useState(bgColor[0])
     const [media,setmedia]=useState(null)
+    const dispatch=useDispatch()
     const [text,setText]=useState("text")
     const [preview,setPreview]=useState(null)
     const {getToken}=useAuth()
@@ -56,13 +60,15 @@ function StoryModel({setShowModel,fetchStories}) {
         formData.append("background_color",backg)
         formData.append("media",media)
         try {
+            const token =await getToken()
             const {data}=await api.post("/api/story/create",formData,
-                {headers:{Authorization:`Bearer ${await getToken()}`}
+                {headers:{Authorization:`Bearer ${token}`}
             })
             if(data.success){
                 setShowModel(false)
                 toast.success("story created")
-                fetchStories()
+                dispatch(fetchStories(token))
+                dispatch(setShowModel(false))
             }else{
                 toast.error(data.message)
             }
@@ -71,13 +77,13 @@ function StoryModel({setShowModel,fetchStories}) {
         }
     }
   return (
-    <div style={{backgroundColor:"rgba(0, 0, 0, 0.8)"}} className='flex items-center justify-center top-0 left-0 bottom-0 right-0 z-20 fixed'>
+    <div style={{backgroundColor:"rgba(0, 0, 0, 0.1)"}} className='flex items-center justify-center top-0 left-0 bottom-0 right-0 z-1000 fixed'>
       <div className='w-full max-w-md'>
         <div className=' text-center flex text-white justify-between items-center'>
-            <button className='cursor-pointer hover:text-blue-100 transition-all duration-300 p-2' onClick={()=>setShowModel(false)}>
+            <button className='cursor-pointer text-gray-700 transition-all duration-300 p-2' onClick={()=>dispatch(setShowModel(false))}>
                 <ArrowLeft size={30}/>
             </button>
-            <h2 className='text-lg hover:text-blue-100 transition-all duration-300 font-semibold'>
+            <h2 className='text-lg text-gray-700 transition-all duration-300 font-semibold'>
                 create-story
             </h2>
             <span className='w-10'></span>

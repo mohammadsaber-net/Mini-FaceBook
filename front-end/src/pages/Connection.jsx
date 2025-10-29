@@ -70,7 +70,7 @@ function Connection(){
         })
     },[])
     return(
-        <div className="min-h-screen  bg-slate-50">
+        <div className="min-h-[calc(100vh-115px)] mt-20 sm:mt-4 bg-slate-50">
             <div className="max-w-6xl mx-auto p-2">
                 <div className="mb-8">
                     <h2 className="font-bold mb-2 text-3xl text-slate-900">connections</h2>
