@@ -16,6 +16,7 @@ import { fetchConnections } from "./redux/connections/connectionSlice"
 import Message from "./pages/Message"
 import { addMessages } from "./redux/messages/messages"
 import Sponsore from "./components/sponsore"
+import OnePost from "./components/onePost"
 
 function App() {
   const {user}=useUser() 
@@ -64,6 +65,7 @@ function App() {
       <Route path="/sponsore" element={<Sponsore />}/>
       <Route path="/createPost" element={<CreatePosts />}/>
       <Route path="/discover" element={<Discover />}/>
+      <Route path="/post/:postId" element={<OnePost />}/>
       <Route path="/profile" element={<Profile />}/>
       <Route path="/profile/:profileId" element={<Profile />}/>
     </Route>

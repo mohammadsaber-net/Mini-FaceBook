@@ -82,7 +82,7 @@ export default function Profile() {
                     activeTab === "media"&&
                     <div className='flex flex-wrap max-w-6xl '>
                         {
-                            addPost.filter((post)=>post.image_urls.length>0).map((post)=>(
+                            addPost.filter((post)=>post.image_urls?.length>0).map((post)=>(
                                 <>
                                 {
                                     post.image_urls.map((image,index)=>(

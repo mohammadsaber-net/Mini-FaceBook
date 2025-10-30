@@ -68,7 +68,7 @@ export const getPosts=async(req,res)=>{
         })
         }
         const userIds=[userId,...user.connections,...user.following]
-        const posts=await Post.find({user:{$in:userIds}}).populate("user").sort({createdAt:-1})
+        const posts=await Post.find({user:{$in:userIds}}).populate("user comment").sort({createdAt:-1})
         return res.status(201).json({
             success:true,
             posts
@@ -103,6 +103,34 @@ export const likePost=async(req,res)=>{
         return res.status(500).json({
             success:false,
             message:error.message
+        })
+    }
+}
+export const getOnePost=async(req,res)=>{
+    try {
+        const {userId}=req.auth()
+        const {postId}=req.params
+        const post=await Post.findById(postId).populate("user").populate({
+            path:"comment",
+            populate:{
+                path: "user",
+                select: "username profile_picture" 
+            }
+        })
+        if (!post) {
+            return res.status(404).json({
+                success: false,
+                message: "Post not found"
+            })
+        }
+        return res.status(200).json({
+            success: true,
+            post
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
         })
     }
 }

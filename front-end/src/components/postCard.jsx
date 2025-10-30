@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react"
 import { BadgeCheck, Heart, MessageCircle, Share2, ThumbsUp } from "lucide-react"
 import moment from "moment"
-import { useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import api from "../api/axios.js";
 import { useAuth } from "@clerk/clerk-react"
 import toast from "react-hot-toast"
 import ResponsiveImage from "./responsiveImage.jsx";
 import { FaComment, FaShare } from "react-icons/fa";
+import LeaveComment from "./LeaveComment.jsx";
 export default function PostCard({post,addUser}) {
     const navigate=useNavigate()
     const {getToken}=useAuth()
+    
+    const location=useLocation()
     const postWithHashtags = post.content?.replace(
   /(#\w+)/g,
   `<span class="text-indigo-600">$1</span>`
@@ -70,15 +73,15 @@ export default function PostCard({post,addUser}) {
             <div className="flex gap-4 align-center">
                 <div className="flex gap-1 align-center">
                     <FaShare className="text-gray-500"/>
-                    <span>10</span>
+                    <span></span>
                 </div>
                 <div className="flex gap-1 align-center">
                     <FaComment className="text-gray-500"/>
-                     <span>2</span>
+                     <span>{post.comment.length}</span>
                 </div>
             </div>
             <div className="flex gap-1 align-center">
-                <ThumbsUp className="text-gray-500"/>
+                <ThumbsUp className="text-gray-600"/>
                 <span>{likes?.length}</span>
             </div>
         </div>
@@ -87,21 +90,26 @@ export default function PostCard({post,addUser}) {
                 Share
                 <FaShare className="w-4 h-4"/>
             </div>
-            <div className="flex-cent cursor-pointer gap-1">
+            <Link to={`post/${post._id}`} className={`flex-cent gap-1 ${
+                location.pathname.startsWith(`/post/${post._id}`) ? "text-blue-600 pointer-events-none fill-blue-600":"cursor-pointer"
+            }`}>
                Comment 
                 <MessageCircle className="w-4 h-4"/>
-            </div>
+            </Link>
             
             <div onClick={handleLikes} className="flex-cent cursor-pointer text-sm gap-2.5">
                  Like <ThumbsUp
                     className={`w-4 h-4 ${
-                        likes.includes(currentUser._id)? "text-gray-500 fill-gray-500" : ""
+                        likes.includes(currentUser._id)? "text-blue-600 fill-blue-600" : ""
                     }`}
                     
                 />
             </div>
         </div>
       </div>
+      {location.pathname.startsWith(`/post/${post._id}`) && (
+          <LeaveComment postId={post._id} comments={post.comment} />
+        )}
     </div>
   )
 }

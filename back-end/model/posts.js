@@ -17,6 +17,10 @@ const postsEschema=mongoose.Schema({
     likes_count:{
         type:[String],
         ref:"FaceUser"
+      },
+      comment:{
+        type:[mongoose.Schema.Types.ObjectId],
+        ref:"FaceComment"
       }
 },{timestamps:true,minimize:false})
 export const Post=mongoose.model("FacePost",postsEschema)
