@@ -1,24 +1,46 @@
-import { ArrowDown, ArrowLeft, ArrowRight, FilePlus, ImagePlus, Megaphone, Newspaper, Search, ShoppingBasket } from 'lucide-react'
+import { ArrowDown, ArrowRight, BookLock, FilePlus, ImagePlus, Megaphone, Newspaper, Search, ShoppingBasket } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import StoryModel from './StoryModel'
 import { FaUserFriends } from 'react-icons/fa'
-import CreatePosts from '../pages/CreatePost'
 import { useDispatch, useSelector } from 'react-redux'
 import { setShowModel, setShowPost } from '../redux/models/showModels'
+import { useEffect, useState } from 'react'
+import { useAuth } from '@clerk/clerk-react'
+import { fetchBlock } from '../redux/block/block'
+import { fetchUser } from '../redux/user/userSlice'
 
 export default function List({setList}) {
   const dispatch=useDispatch()
   const user=useSelector(state=>state.user?.user)
-  // "
-  //       bg-gray-50 p-3 shadow-md
-  //       fixed inset-0 z-50 rounded-none
-  //       sm:absolute sm:inset-auto sm:top-12 sm:left-1/2 sm:-translate-x-1/2 sm:z-10 
-  //        sm:min-w-96 sm:min-h-96 sm:rounded-lg sm:w-auto sm:h-auto
-  //       "
+  const [block,setBlock]=useState(false)
+  const [blockedUsers, setBlockedUsers] = useState(user.blocked||[])
+  const {getToken}=useAuth()
+  // const handleUnblock=async(blockedId)=>{
+  //   const token=await getToken()
+  //   dispatch(fetchBlock({blockedId,token}))
+  //   setBlockedUsers(prev => prev.filter(u => u._id !== blockedId))
+  // }
+  const handleUnblock = async (blockedId) => {
+    try {
+      const token = await getToken()
+      const result = await dispatch(fetchBlock({ blockedId, token })).unwrap()
+      if (!result?.includes(blockedId)) {
+        setBlockedUsers(prev => prev.filter(u => u._id !== blockedId))
+      }
+
+    } catch (error) {
+      console.error("Failed to unblock user:", error)
+    }
+  }
+
+  useEffect(()=>{
+    getToken().then(async(token)=>{
+      dispatch(fetchUser(token))
+    })
+  },[dispatch])
   return (
       <>
     
-       <div className="fixed top-0 left-0 sm:right-1/3 bottom-0 sm:top-11 right-0 sm:bottom-1/4 z-50 bg-gray-50 shadow-md p-4 rounded-md z-50">
+       <div className="fixed z-10000 bg-gray-50 top-0 left-0 sm:right-1/2 bottom-0 sm:top-11 right-0 sm:bottom-0 shadow-md p-4 rounded-md">
       <div className='flex justify-between mb-2 px-2'>
         <Link onClick={()=>setList(false)} to={"/discover"} className='size-8 sm:hidden flex justify-center items-center rounded-full bg-gray-200'>
           <Search className='sm:hidden'/>
@@ -28,8 +50,8 @@ export default function List({setList}) {
           <ArrowRight onClick={()=>setList(false)} className='cursor-pointer sm:hidden'/>
         </div>
       </div>
-      <div className='bg-white sm:hidden p-2 mb-4 flex justify-between items-center rounded-md shadow max-w-96 m-auto'>
-        <div className='size-8 sm:hidden flex justify-center items-center rounded-full bg-gray-200'>
+      <div className='bg-white p-2 mb-4 flex justify-between items-center rounded-md shadow max-w-96 m-auto'>
+        <div className='size-8 flex justify-center items-center rounded-full bg-gray-200'>
           <ArrowDown />
         </div>
         <Link to={`/profile/${user._id}`} onClick={()=>setList(false)} className='flex gap-2 items-center'>
@@ -61,7 +83,7 @@ export default function List({setList}) {
            Advertisement
           </Link>
         </div>
-      <div className='bg-white shadow-md min-h-80 p-2 w-64 rounded-lg'>
+      <div className='bg-white shadow-md overflow-hidden min-h-80 p-2 w-64 rounded-lg'>
         <div className='mt-0 mb-4 border-b border-gray-300'>
           <h3>community</h3>
         <Link onClick={()=>setList(false)} to={"/connections"} className='gap-1 transition hover:bg-gray-200 p-2 rounded-sm cursor-pointer flex align-center'>
@@ -98,8 +120,37 @@ export default function List({setList}) {
             </div>
         </Link>
         </div>
+        <div className=''>
+          <h3>Users</h3>
+          <div onClick={()=>setBlock(!block)}className='gap-1 relative transition hover:bg-gray-200 p-2 rounded-sm cursor-pointer flex align-center'>
+
+            <div className=''>
+              <BookLock className='text-sky-600 size-6'/>
+            </div>
+            <div>
+              <h4>block</h4>
+              <p className='text-gray-500'>view your blocked list</p>
+            </div>
+            
         </div>
+        </div>
+         <div className={`w-full ${block?'h-16':'h-0'} bg-white transition-all duration-300 rounded-md max-h-60 overflow-y-auto`}>
+              <div>
+                {blockedUsers.length>0?blockedUsers.map(user=>(
+                  <div key={user._id} className='py-1 flex justify-between items-center border-b border-gray-200'>
+                    <div className='flex items-center'>
+                      <img src={user.profile_picture} alt={user.full_name} className='w-8 h-8 rounded-full mr-2'/>
+                      <span className='text-gray-700'>{user.full_name}</span>
+                    </div>
+                    <button className='bg-gray-700 text-white cursor-pointer px-2 py-1 rounded-md focus:scale-95' onClick={() => handleUnblock(user._id)}>Unblock</button>
+                  </div>
+                )): <p className='text-gray-500 mt-2'>No users blocked</p>}
+              </div>
+            </div>
+        </div>
+       
       </div>
+      
     </div>
     </>
   )

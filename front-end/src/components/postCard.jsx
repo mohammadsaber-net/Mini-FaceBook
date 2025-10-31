@@ -5,13 +5,14 @@ import { Link, useLocation, useNavigate } from "react-router-dom"
 import api from "../api/axios.js";
 import { useAuth } from "@clerk/clerk-react"
 import toast from "react-hot-toast"
+import { useSelector } from "react-redux";
 import ResponsiveImage from "./responsiveImage.jsx";
 import { FaComment, FaShare } from "react-icons/fa";
 import LeaveComment from "./LeaveComment.jsx";
 export default function PostCard({post,addUser}) {
     const navigate=useNavigate()
     const {getToken}=useAuth()
-    
+    const user=useSelector(state=>state.user?.user)
     const location=useLocation()
     const postWithHashtags = post.content?.replace(
   /(#\w+)/g,
@@ -100,9 +101,8 @@ export default function PostCard({post,addUser}) {
             <div onClick={handleLikes} className="flex-cent cursor-pointer text-sm gap-2.5">
                  Like <ThumbsUp
                     className={`w-4 h-4 ${
-                        likes.includes(currentUser._id)? "text-blue-600 fill-blue-600" : ""
+                        likes.includes(user._id) || likes.includes(addUser._id) ? "text-blue-600 fill-blue-600" : ""
                     }`}
-                    
                 />
             </div>
         </div>

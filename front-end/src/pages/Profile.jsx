@@ -59,7 +59,7 @@ export default function Profile() {
                 <div className='bg-white rounded-xl flex justify-between shadow max-w-md mx-auto'>
                     {
                         ["addPost","media","likes"].map((tab)=>(
-                            <button key={tab} onClick={()=>setActiveTab(tab)} className={`flex-1 px-4 py-2 rounded-lg transition-colors text-sm relative z-50 font-medium cursor-pointer ${activeTab===tab?"bg-indigo-600 text-white":"text-gray-600 hover:text-gray-900"} `}>
+                            <button key={tab} onClick={()=>setActiveTab(tab)} className={`flex-1 px-4 py-2 rounded-lg transition-colors text-sm relative z-10 font-medium cursor-pointer ${activeTab===tab?"bg-indigo-600 text-white":"text-gray-600 hover:text-gray-900"} `}>
                                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
 
                             </button>
@@ -74,8 +74,8 @@ export default function Profile() {
                         console.log(post)
                         return(
                             <PostCard key={post._id} addUser={addUser} post={post} />
-                        )})
-                        }
+                        )
+                    })}
                     </div>
                 }
                 {

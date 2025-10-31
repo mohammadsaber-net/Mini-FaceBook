@@ -17,6 +17,7 @@ import Message from "./pages/Message"
 import { addMessages } from "./redux/messages/messages"
 import Sponsore from "./components/sponsore"
 import OnePost from "./components/onePost"
+import RecentMessage from "./components/RecentMessage"
 
 function App() {
   const {user}=useUser() 
@@ -62,6 +63,7 @@ function App() {
       <Route path="/messages" element={<Message />}/>
       <Route path="/messages/:userId" element={<ChatBox />}/>
       <Route path="/connections" element={<Connection />}/>
+      <Route path="/recentmessage" element={<RecentMessage />}/>
       <Route path="/sponsore" element={<Sponsore />}/>
       <Route path="/createPost" element={<CreatePosts />}/>
       <Route path="/discover" element={<Discover />}/>

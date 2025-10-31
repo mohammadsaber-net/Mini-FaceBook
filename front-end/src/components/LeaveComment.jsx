@@ -1,14 +1,17 @@
 import { useAuth } from '@clerk/clerk-react'
 import { Image, ThumbsUp, X } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import api from '../api/axios'
 import toast from 'react-hot-toast'
+import { useSelector } from 'react-redux'
 import moment from 'moment'
-import { Link } from 'react-router-dom'
+import { Link} from 'react-router-dom'
 
 export default function LeaveComment({postId,comments}) {
   const [comment, setComment] = useState("")
+  const user=useSelector(state=>state.user?.user)
   const [image, setImage] = useState([])
+  const [commentsList, setCommentsList] = useState(comments || [])
   const [loading, setLoading] = useState(false)
   const {getToken}=useAuth()
   const handleSubmit = async(e) => {
@@ -32,6 +35,7 @@ export default function LeaveComment({postId,comments}) {
             if(data.success){
                 setComment("")
                 setImage([])
+                setCommentsList([data.comment, ...commentsList])
                 toast.success("comment added")
             }else{
                 toast.error(data.message)
@@ -42,30 +46,23 @@ export default function LeaveComment({postId,comments}) {
         }
         setLoading(false)
   }
-  const [likes, setLikes] = useState( []);
-    // const currentUser=post.user
-    const handleLikes=async()=>{
-        // try {
-        //     const {data}=await api.post("/api/post/like",{postId:post._id},{
-        //         headers:{Authorization:`Bearer ${await getToken()}`}
-        //     })
-        //     if(data.success){
-        //         toast.success(data.message) 
-        //          setLikes((prevLikes) => {
-        //             if (prevLikes.includes(currentUser._id)) {
-        //             return prevLikes.filter((id) => id !== currentUser._id);
-        //             } else {
-        //             return [...prevLikes, currentUser._id];
-        //             }
-        //         });   
-        //     }
-        // } catch (error) {
-        //     toast.error(error.message)
-        // }
+  
+  const handleLikes = async (commentId) => {
+  try {
+    const { data } = await api.post("/api/comment/like", { commentId }, {
+      headers: { Authorization: `Bearer ${await getToken()}` },
+    });
+
+    if (data.success) {
+      toast.success(data.message);
+      setCommentsList(prev =>
+        prev.map(comment => (comment._id === data.comment._id ? data.comment : comment))
+      );
     }
-    useEffect(()=>{
-        
-    },[likes])
+  } catch (error) {
+    toast.error(error.message);
+  }
+};
   return (
     <form className='bg-white w-full text-right' onSubmit={handleSubmit}>
       <div className='flex justify-center me-0 ms-auto w-80 border rounded-lg border-gray-300 items-center'>
@@ -95,13 +92,13 @@ export default function LeaveComment({postId,comments}) {
       <div className='border-t border-gray-200'>
         <h3>Recent Comments</h3>
         {
-          comments.map(comment => (
+          commentsList.map(comment => (
         
               <div key={comment._id} className='border-b border-gray-200 p-2'>
               <div className='flex items-center justify-between'>
                 <Link to={`/profile/${comment.user?._id}`} className='flex items-center gap-2'>
                   <img src={comment.user?.profile_picture} alt="" className='w-8 h-8 rounded-full'/>
-                  <span className='text-sm font-semibold'>{comment.user?.username}</span>
+                  <span className='text-sm font-semibold'>{comment.user?.full_name}</span>
                 </Link>
               <div>
                   <div className='flex w-64 gap-2 flex-wrap p-2'>
@@ -113,8 +110,10 @@ export default function LeaveComment({postId,comments}) {
               </div>
               </div>
               <small className='text-xm text-gray-500'>{moment(comment.createdAt).fromNow()}</small>
-              <div onClick={handleLikes} className="flex justify-end items-center text-gray-500 cursor-pointer text-xm text-right gap-2.5">
-                 Like <ThumbsUp />
+              <div onClick={()=>handleLikes(comment)} className="flex justify-end items-center text-gray-500 cursor-pointer text-xm text-right gap-2.5">
+                 Like <ThumbsUp className={`${comment.likes_count.includes(user?._id) ? "text-blue-500 fill-current" : ""}`} /> {
+                  <span>{comment.likes_count.length || 0}</span>
+                 }
             </div>
             </div>
           ))

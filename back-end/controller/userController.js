@@ -3,11 +3,12 @@ import {imagekit} from "../configs/imagekit.js"
 import fs from "fs"
 import { FaceUser } from "../model/FaceUser.js"
 import { Post } from "../model/posts.js"
+import { Connection } from "../model/Connections.js"
 export const getUserData=async(req,res)=>{
     try {
         const {userId}=req.auth()
         
-        const value=await FaceUser.findById(userId)
+        const value=await FaceUser.findById(userId).populate("blocked")
         return res.status(200).json({
                 success:true,
                 value
@@ -102,9 +103,9 @@ export const discoverUsers=async(req,res)=>{
     const filterAllUsers=allUsers.filter(user=>user._id !== userId)
     if(filterAllUsers.length===0){
         return res.status(200).json({
-        success:false,
-        message:"there are no user with that name"
-    })
+            success:false,
+            message:"there are no user with that name"
+        })
     }
     return res.status(200).json({
         success:true,
@@ -182,6 +183,60 @@ export const getUserProfile=async(req,res)=>{
             profile,
             posts
         })
+    } catch (error) {
+        res.status(500).json({
+        success:false,
+        message:error.message
+    }) 
+    }
+}
+export const blocked=async(req,res)=>{
+    try {
+        const {userId}=req.auth()
+        const {blockedId}=req.body
+        if(userId===blockedId){
+            return res.status(200).json({
+                success:false,
+                message:"you can't block yourself"
+            })
+        }
+        const user=await FaceUser.findById(userId)
+        if(user.blocked.includes(blockedId)){
+            user.blocked=user.blocked.filter(id=>id !== blockedId)
+            await user.save()
+            res.status(200).json({
+                success:true,
+                message:"user unblocked successfully",
+                block:user.blocked
+            })
+        }else{
+           user.blocked.push(blockedId)
+           const blockedUser=await FaceUser.findById(blockedId)
+            await Connection.updateMany(
+            {
+                $or: [
+                { from_user_id: userId, to_user_id: blockedId },
+                { from_user_id: blockedId, to_user_id: userId }
+                ],
+                status: "accepted"
+            },
+            { $set: { status: "pending" } }
+            );
+
+           user.connections=user.connections.filter(id=>id !==blockedId)
+           user.following=user.following.filter(id=>id !==blockedId)
+           user.followers=user.followers.filter(id=>id !==blockedId)
+           blockedUser.connections=blockedUser.connections.filter(id=>id !==userId)
+           blockedUser.following=blockedUser.following.filter(id=>id !==userId)
+           blockedUser.followers=blockedUser.followers.filter(id=>id !==userId)
+           await user.save()
+           await blockedUser.save()
+            res.status(200).json({
+                success:true,
+                message:"user blocked successfully",
+                block:user.blocked
+            })
+        }
     } catch (error) {
         res.status(500).json({
         success:false,

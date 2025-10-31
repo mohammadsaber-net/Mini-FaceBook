@@ -30,7 +30,6 @@ export default function OnePost() {
         }
         setLoading(false)
     }
-    console.log(post)
     useEffect(()=>{
         getPost()
     },[])

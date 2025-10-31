@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import { Outlet, useNavigate } from "react-router-dom"
 import SideBar from "../components/sideBar.jsx"
 import { useDispatch, useSelector } from "react-redux"
-import RecentMessage from "../components/RecentMessage.jsx"
 import { fetchRecentMessages } from "../redux/messages/recentMessages.js"
 import { useAuth } from "@clerk/clerk-react"
 import Navbar from "../components/navbar.jsx"
@@ -40,12 +39,6 @@ function LayOut(){
             <Navbar />
             {showModel&& <StoryModel/>}
             {showPost&& <CreatePosts/>}
-            <div className={`fixed top-10 right-10 bg-gray-200 md:hidden z-50 ${unread?"block":"hidden"}`}>
-                <button className="absolute top-1 right-1 border border-red-500 hover:bg-red-500 hover:text-white transition text-red-500 rounded-sm cursor-pointer">
-                    <X />
-                </button>
-                <RecentMessage />
-            </div>
             <SideBar sideOpen={sideOpen} setSideOpen={setSideOpen} />
             <div className="bg-gray-100 mt-8 w-screen">
                 <Outlet />

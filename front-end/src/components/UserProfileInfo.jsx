@@ -1,13 +1,34 @@
-import { Calendar, MapPin, MessageCircle, PenBox, Verified } from 'lucide-react'
+import { Calendar, ListEnd, MapPin, MessageCircle, PenBox, Verified } from 'lucide-react'
 import moment from 'moment'
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import ResponsiveImage from "./responsiveImage.jsx";
+import { fetchBlock } from '../redux/block/block.js'
+import { useAuth } from '@clerk/clerk-react'
+import { useEffect } from 'react'
+import { fetchUser } from '../redux/user/userSlice.js'
 export default function UserProfileInfo(param) {
   const {addPost,addUser,profileId,setShowEdit}=param
   const navigate=useNavigate()
+  const dispatch=useDispatch()
   const currentUser=useSelector(state=>state.user?.user)
+  const {getToken}=useAuth()
+  const handleBlock=async()=>{
+    const token=await getToken()
+    dispatch(fetchBlock({token,blockedId:profileId}))
+  }
+  const block=useSelector(state=>state.block?.block)
+  useEffect(()=>{
+    if(block&&block.includes(profileId)){
+      navigate("/")
+    }
+  },[block])
+  useEffect(()=>{
+      getToken().then(async(token)=>{
+        dispatch(fetchUser(token))
+      })
+    },[dispatch])
   return (
     <div className='relative bg-white md:px-8 py-4 px-6'>
       <div className='flex flex-col md:flex-row items-start gap-6'>
@@ -37,6 +58,9 @@ export default function UserProfileInfo(param) {
                         </button>
                     }
                 </div>
+                {currentUser._id !== profileId && <div onClick={()=>handleBlock()} className='absolute top-2 right-2 text-gray-600 hover:text-gray-900 transition cursor-pointer'>
+                  <ListEnd />
+                </div>}
                 <p className='text-gray-700 text-sm max-w-md mt-4 '>
                     {addUser.bio}
                 </p>

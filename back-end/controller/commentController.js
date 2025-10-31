@@ -51,13 +51,14 @@ export const addComment = async (req, res) => {
         type_comment,
         image_url
         });
-        post.comment.push(newComment._id);
+        const commentPopulated = await Comment.findById(newComment._id).populate('user', 'full_name username profile_picture');
+        post.comment.push(commentPopulated._id);
         await post.save();
 
         return res.status(201).json({
         success: true,
         message: "Comment added successfully",
-        comment: newComment,
+        comment: commentPopulated,
         });
     } catch (error) {
         console.error("Error adding comment:", error)
@@ -81,11 +82,13 @@ export const likeComment=async(req,res)=>{
         if(comment.likes_count.includes(userId)){
             comment.likes_count=comment.likes_count.filter(user=>user !== userId)
             await comment.save()
-            return res.status(201).json({success:true,message:"comment unliked"})
+            const updatedComment = await Comment.findById(commentId).populate('user', 'full_name profile_picture');
+            return res.status(201).json({success:true,comment:updatedComment,message:"comment unliked"})
         }else{
             comment.likes_count.push(userId)
             await comment.save()
-            return res.status(201).json({success:true,message:"comment liked"})
+            const updatedComment = await Comment.findById(commentId).populate('user', 'full_name profile_picture');
+            return res.status(201).json({success:true,comment:updatedComment,message:"comment liked"})
         }
     } catch (error) {
         console.error("Error liked comment:", error)

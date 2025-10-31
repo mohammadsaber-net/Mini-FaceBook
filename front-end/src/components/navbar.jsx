@@ -1,5 +1,5 @@
 import { UserButton } from '@clerk/clerk-react'
-import { Home, ListIcon, ListTodo, Menu, MessageCircle, Search, ShoppingBasket } from 'lucide-react'
+import { Home, Menu, MessageCircle, Search, ShoppingBasket } from 'lucide-react'
 import { useState } from 'react'
 import { FaFacebook, FaUserFriends } from 'react-icons/fa'
 import { NavLink } from 'react-router-dom'

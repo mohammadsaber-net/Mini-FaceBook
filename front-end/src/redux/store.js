@@ -5,6 +5,7 @@ import messageSlice from "./messages/messages"
 import recentMessageSlice from "./messages/recentMessages"
 import showModelsSlice from "./models/showModels"
 import storySlice from "./stories/story"
+import blockSlice from "./block/block"
 export const store=configureStore({
     reducer:{
         user:userSlice.reducer,
@@ -12,6 +13,7 @@ export const store=configureStore({
         messages:messageSlice.reducer,
         recentMessage:recentMessageSlice.reducer,
         showModels:showModelsSlice,
-        stories:storySlice.reducer
+        stories:storySlice.reducer,
+        block:blockSlice.reducer,
     }
 })

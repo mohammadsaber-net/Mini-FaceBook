@@ -40,6 +40,10 @@ const FaceUserSchema=new mongoose.Schema({
         type:String,
         ref:"FaceUser"
     }],
+    blocked:[{
+        type:String,
+        ref:"FaceUser"
+    }],
     connections:[{
         type:String,
         ref:"FaceUser"

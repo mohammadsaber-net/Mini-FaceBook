@@ -68,7 +68,7 @@ function ChatBox(){
         messageEndRef.current?.scrollIntoView({behavior:"smooth"})
     },[messages])
     return(
-        <div className="flex flex-col h-full pt-2">
+        <div className="flex flex-col min-h-[calc(100vh-90px)] sm:min-h-[calc(100vh-45px)] mt-14 sm:mt-3 pt-2">
             <div className="flex items-center gap-2 md:px-10 xl:pl-24 bg-gradient-to-r from-indigo-100
             to-purple-100 border-b border-gray-300">
                 <img src={user?.profile_picture} onClick={()=>navigate(`/profile/${user._id}`)} className="size-8 cursor-pointer rounded-full" alt="" />
@@ -103,8 +103,8 @@ function ChatBox(){
                 </div>
                 <div ref={messageEndRef}>
                 </div>
-                <div className="px-4">
-                    <div className="flex items-center gap-3 pl-5 p-1.5 w-full bg-white max-w-xl mx-auto border border-gray-300 shadow rounded-lg mb-5">
+                <div className="px-4 mt-auto mb-0">
+                    <div className="flex items-center gap-1 sm:gap-3 pl-5 p-1.5 w-full bg-white max-w-xl mx-auto border border-gray-300 shadow rounded-lg mb-5">
                     
                         <input className="flex-1 outline-none text-slate-700" placeholder="type a message" onKeyDown={e=>e.key==="Enter"&& sendMessage()}
                         onChange={(e)=>setText(e.target.value)} value={text}

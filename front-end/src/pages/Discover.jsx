@@ -4,7 +4,7 @@ import { Search } from "lucide-react"
 import UserCard from "../components/UserCard.jsx"
 import Loading from "../components/Loading.jsx"
 import { useAuth } from "@clerk/clerk-react"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import toast from "react-hot-toast"
 import api from "../api/axios.js"
 import { fetchUser } from "../redux/user/userSlice.js"
@@ -13,6 +13,8 @@ function Discover(){
     const [users,setUsers]=useState([])
     const [loading,setLoading]=useState(false)
     const {getToken}=useAuth()
+    const curUser=useSelector(state=>state.user?.user)
+    const blockedUsers=curUser.blocked.map(block=>block._id)
     const dispatch=useDispatch()
     const [searchPlace,setSearchplace]=useState(false)
     const handleSearch=async(e)=>{
@@ -23,9 +25,9 @@ function Discover(){
                 const {data}=await api.post("/api/user/discover",{input},{
                     headers:{Authorization:`Bearer ${await getToken()}`}
                 })
-                console.log(data)
                 if(data.success){
-                    setUsers(data.users)
+                    const unBlocked=data.users.filter(user=>!blockedUsers.includes(user._id))
+                    setUsers(unBlocked)
                 }else{
                     toast.error(data.message)
                 }
