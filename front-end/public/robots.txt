@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mini-facebook-98.vercel.app/sitemap.xml
