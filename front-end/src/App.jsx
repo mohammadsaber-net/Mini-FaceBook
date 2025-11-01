@@ -18,6 +18,7 @@ import { addMessages } from "./redux/messages/messages"
 import Sponsore from "./components/sponsore"
 import OnePost from "./components/onePost"
 import RecentMessage from "./components/RecentMessage"
+import SignUpPage from "./pages/sign-up"
 
 function App() {
   const {user}=useUser() 
@@ -58,6 +59,8 @@ function App() {
     <>
     <Toaster />
     <Routes>
+      <Route path="/sign-up" element={<SignUpPage />} />
+
     <Route path="/" element={!user?<Login />:<LayOut />}>
       <Route index element={<Feed />}/>
       <Route path="/messages" element={<Message />}/>
