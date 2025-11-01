@@ -4,25 +4,17 @@ import fs from "fs"
 import { FaceUser } from "../model/FaceUser.js"
 import { Post } from "../model/posts.js"
 import { Connection } from "../model/Connections.js"
-export const getUserData=async(req,res)=>{
-    try {
+import { catchErrorMidelware, handleError } from "../middleware/authentication.js"
+export const getUserData=catchErrorMidelware( async(req,res,next)=>{
         const {userId}=req.auth()
-        
         const value=await FaceUser.findById(userId).populate("blocked")
         return res.status(200).json({
                 success:true,
                 value
-            })
-    } catch (error) {
-        return res.status(500).json({
-                success:false,
-                value:null
-            })
-    }
-}
+        })
+})
 //update data 
-export const updateUserData=async(req,res)=>{
-    try {
+export const updateUserData=catchErrorMidelware(async(req,res,next)=>{
         const {userId}=req.auth()
         let {username,bio,location,full_name}=req.body
         const tempUser=await FaceUser.findById(userId)
@@ -33,10 +25,7 @@ export const updateUserData=async(req,res)=>{
         if(username !== tempUser.username){
             const value=await FaceUser.findOne({username})
             if(value){
-                return res.status(400).json({
-                    success: false,
-                    message: "Username already taken",
-                })
+                return handleError("Username already taken",400,next)
             }
         }
         const updatedData={username,bio,location,full_name}
@@ -80,19 +69,11 @@ export const updateUserData=async(req,res)=>{
             value:updating,
             message:"profile updated successfully"
         })
-    } catch (error) {
-        return res.status(500).json({
-                success:false,
-                message:error.message,
-                value:null,
-            })
-    }
-}
-export const discoverUsers=async(req,res)=>{
-    try {
+})
+export const discoverUsers=catchErrorMidelware(async(req,res,next)=>{
         const {userId}=req.auth()
         const {input}=req.body
-    const allUsers=await FaceUser.find({
+        const allUsers=await FaceUser.find({
         $or:[
             {username:new RegExp(input,"i")},
             {email:new RegExp(input,"i")},
@@ -102,33 +83,23 @@ export const discoverUsers=async(req,res)=>{
     })
     const filterAllUsers=allUsers.filter(user=>user._id !== userId)
     if(filterAllUsers.length===0){
-        return res.status(200).json({
-            success:false,
-            message:"there are no user with that name"
-        })
+        return handleError("there are no user with that name",200,next)
     }
     return res.status(200).json({
         success:true,
         users:filterAllUsers
     })
-    } catch (error) {
-       res.status(500).json({
-        success:false,
-        message:error.message
-    }) 
-    }
-}
-export const followUser=async(req,res)=>{
-    try {
+})
+export const followUser=catchErrorMidelware(async(req,res,next)=>{
     const {userId}=req.auth()
     const {id}=req.body
     const user=await FaceUser.findById(userId)
     const toUser=await FaceUser.findById(id)
+     if(!user || !toUser){
+        return handleError("user not found",404,next)
+    }
     if(user.following.includes(id)){
-        return res.status(404).json({
-            success:false,
-            message:"you are already following "+toUser.username,
-        })
+        return handleError("you are already following "+toUser.username,404,next)
     }
     user.following.push(id)
     toUser.followers.push(userId)
@@ -138,24 +109,17 @@ export const followUser=async(req,res)=>{
         success:true,
         message:"now you are following "+ toUser.username,
     })
-    } catch (error) {
-        res.status(500).json({
-        success:false,
-        message:error.message
-    }) 
-    }
-}
-export const unFollowUser=async(req,res)=>{
-    try {
+})
+export const unFollowUser=catchErrorMidelware(async(req,res,next)=>{
     const {userId}=req.auth()
     const {id}=req.body
     const user=await FaceUser.findById(userId)
     const toUser=await FaceUser.findById(id)
+    if(!user || !toUser){
+        return handleError("user not found",404,next)
+    }
     if(!user.following.includes(id)){
-        return res.status(404).json({
-            success:false,
-            message:"you are already unfollowing "+toUser.username,
-        })
+        return handleError("you are already unfollowing "+toUser.username,404,next)
     }
     user.following=user.following.filter(user=>user !==id)
     toUser.followers=toUser.followers.filter(user=>user !==userId)
@@ -165,15 +129,8 @@ export const unFollowUser=async(req,res)=>{
         success:true,
         message:"now you are unfollowing "+ toUser.username,
     })
-    } catch (error) {
-        res.status(500).json({
-        success:false,
-        message:error.message
-    }) 
-    }
-}
-export const getUserProfile=async(req,res)=>{
-    try {
+})
+export const getUserProfile=catchErrorMidelware(async(req,res,next)=>{
         const {userId}=req.auth()
         const {id}=req.body
         const profile=await FaceUser.findById(id).populate("followers following connections")
@@ -183,22 +140,12 @@ export const getUserProfile=async(req,res)=>{
             profile,
             posts
         })
-    } catch (error) {
-        res.status(500).json({
-        success:false,
-        message:error.message
-    }) 
-    }
-}
-export const blocked=async(req,res)=>{
-    try {
+})
+export const blocked=catchErrorMidelware(async(req,res,next)=>{
         const {userId}=req.auth()
         const {blockedId}=req.body
         if(userId===blockedId){
-            return res.status(200).json({
-                success:false,
-                message:"you can't block yourself"
-            })
+            return handleError("not available",200,next)
         }
         const user=await FaceUser.findById(userId)
         if(user.blocked.includes(blockedId)){
@@ -237,10 +184,4 @@ export const blocked=async(req,res)=>{
                 block:user.blocked
             })
         }
-    } catch (error) {
-        res.status(500).json({
-        success:false,
-        message:error.message
-    }) 
-    }
-}
+})

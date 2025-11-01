@@ -14,11 +14,6 @@ export default function List({setList}) {
   const [block,setBlock]=useState(false)
   const [blockedUsers, setBlockedUsers] = useState(user.blocked||[])
   const {getToken}=useAuth()
-  // const handleUnblock=async(blockedId)=>{
-  //   const token=await getToken()
-  //   dispatch(fetchBlock({blockedId,token}))
-  //   setBlockedUsers(prev => prev.filter(u => u._id !== blockedId))
-  // }
   const handleUnblock = async (blockedId) => {
     try {
       const token = await getToken()

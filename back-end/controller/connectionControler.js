@@ -2,9 +2,10 @@ import { err } from "inngest/types"
 import { inngest } from "../inngest/index.js"
 import { Connection } from "../model/Connections.js"
 import { FaceUser } from "../model/FaceUser.js"
+import { catchErrorMidelware, handleError } from "../middleware/authentication.js"
 
-export const sendConnectionRequest=async(req,res)=>{
-    try {
+export const sendConnectionRequest=catchErrorMidelware(
+     async(req,res,next)=>{
         const {userId}=req.auth()
         const {id}=req.body
         const last24H=new Date(Date.now() - 24*60*60*1000)
@@ -13,10 +14,7 @@ export const sendConnectionRequest=async(req,res)=>{
             createdAt:{$gt:last24H}
         })
         if(connectionRequests.length>=20){
-            return res.status(403).json({
-                success:false,
-                message:"you have sent 20 request in last 24 h, you can back tomorrow for more requests"
-            })
+            return handleError("you have sent 20 request in last 24 h, you can back tomorrow for more requests",403,next)
         }
         const connection=await Connection.findOne({
                 $or:[
@@ -35,25 +33,16 @@ export const sendConnectionRequest=async(req,res)=>{
             })
             return res.status(200).json({success:true,message:"connection request sent successfully"})
         }else if(connection && connection.status==="accepted"){
-            return res.status(200).json({success:false,message:"you are aleardy friends"})
+            return handleError("you are aleardy friends",200,next)
         }
-        return res.status(200).json({success:false,message:"connection request pending"})
-    } catch (error) {
-        return res.status(500).json({
-                success:false,
-                message:error.message
-            })
-    }
-}
-export const getUserConnections=async(req,res)=>{
-    try {
+        return handleError("connection request pending",200,next)
+})
+export const getUserConnections=catchErrorMidelware(
+async(req,res,next)=>{
        const {userId}=req.auth()
        const user =await FaceUser.findById(userId).populate("connections followers following")
        if (!user) {
-        return res.status(404).json({
-            success: false,
-            message: "User not found",
-        });
+        return handleError("User not found",404,next)
         }
        const connections=user.connections 
        const followers=user.followers 
@@ -74,26 +63,20 @@ export const getUserConnections=async(req,res)=>{
         following,
         pendingConnections
        })
-    } catch (error) {
-        return res.status(500).json({
-            success:false,
-            message:error.message
-        })
-    }
-}
-export const acceptConnectionRequest=async(req,res)=>{
-    try {
+})
+export const acceptConnectionRequest=catchErrorMidelware(
+    async(req,res,next)=>{
         const {userId}=req.auth()
        const {id}=req.body
        const connection =await Connection.findOne({from_user_id:id,to_user_id:userId})
        if(!connection){
-           return res.status(404).json({
-               success:false,
-               message:"connection not found"
-            })
+           return handleError("conncetion not found",404,next)
         }
         const user=await FaceUser.findById(userId)
         const toUser=await FaceUser.findById(id)
+        if(!toUser || !user){
+           return handleError("user not found",404,next)
+        }
         user.connections.push(id)
         toUser.connections.push(userId)
         await user.save()
@@ -104,11 +87,4 @@ export const acceptConnectionRequest=async(req,res)=>{
             success:true,
             message:"connection has accepted successfully"
         })
-    } catch (error) {
-        console.log("connectino errrr",error)
-        return res.status(500).json({
-                success:false,
-                message:error.message
-            })
-    }
-}
+})

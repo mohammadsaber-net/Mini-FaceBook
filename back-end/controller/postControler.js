@@ -2,10 +2,10 @@ import fs from "fs"
 import {imagekit} from "../configs/imagekit.js"
 import { Post } from "../model/posts.js"
 import { FaceUser } from "../model/FaceUser.js"
+import { catchErrorMidelware, handleError } from "../middleware/authentication.js"
 
 
-export const addPost=async (req,res)=>{
-    try {
+export const addPost=catchErrorMidelware(async (req,res,next)=>{
         const {userId}=req.auth()
         const {content,post_type}=req.body
         const images=req.files || []
@@ -36,8 +36,6 @@ export const addPost=async (req,res)=>{
                 })
             )
         }
-        console.log(image_url)
-        console.log(content)
         await Post.create({
             user:userId,
             content,
@@ -48,24 +46,12 @@ export const addPost=async (req,res)=>{
             success:true,
             message:"post created successfully"
         })
-    } catch (error) {
-          console.error("❌ ADD POST ERROR:", error)
-    return res.status(500).json({
-        success: false,
-        message: error.message,
-        error
-    })
-    }
-}
-export const getPosts=async(req,res)=>{
-    try {
+})
+export const getPosts=catchErrorMidelware(async(req,res,next)=>{
         const {userId}=req.auth()
         const user =await FaceUser.findById(userId)
         if (!user) {
-        return res.status(404).json({
-            success: false,
-            message: "User not found or deleted"
-        })
+        return handleError("user not found",404,next)
         }
         const userIds=[userId,...user.connections,...user.following]
         const posts=await Post.find({user:{$in:userIds}}).populate("user comment").sort({createdAt:-1})
@@ -73,22 +59,16 @@ export const getPosts=async(req,res)=>{
             success:true,
             posts
         })
-    } catch (error) {
-         console.error("❌ ADD POST ERROR:", error)
-    return res.status(500).json({
-        success: false,
-        message: error.message,
-        error
-    })
-    }
-}
+})
 
 
-export const likePost=async(req,res)=>{
-    try {
+export const likePost=catchErrorMidelware(async(req,res,next)=>{
         const {userId}=req.auth()
         const {postId}=req.body
         const post=await Post.findById(postId)
+        if(!post){
+           return handleError("post not found",404,next)
+        }
         if(post.likes_count.includes(userId)){
             post.likes_count=post.likes_count.filter(user=>user !== userId)
             await post.save()
@@ -99,15 +79,8 @@ export const likePost=async(req,res)=>{
             return res.status(201).json({success:true,message:"post liked"})
         }
         
-    } catch (error) {
-        return res.status(500).json({
-            success:false,
-            message:error.message
-        })
-    }
-}
-export const getOnePost=async(req,res)=>{
-    try {
+})
+export const getOnePost=catchErrorMidelware(async(req,res,next)=>{
         const {userId}=req.auth()
         const {postId}=req.params
         const post=await Post.findById(postId).populate("user").populate({
@@ -118,19 +91,10 @@ export const getOnePost=async(req,res)=>{
             }
         })
         if (!post) {
-            return res.status(404).json({
-                success: false,
-                message: "Post not found"
-            })
+            return handleError("post not found",404,next)
         }
         return res.status(200).json({
             success: true,
             post
         })
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: error.message
-        })
-    }
-}
+})

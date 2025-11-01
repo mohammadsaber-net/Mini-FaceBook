@@ -83,7 +83,7 @@ const sendNewConnectionReminder=inngest.createFunction(
         })
         })
         const in24Hours = new Date(Date.now() + 24 * 60 * 60 * 1000);
-        await step.sleepUntil("wait for 24h",in24Hours)
+        await step.sleepUntil("wait-for-24h",in24Hours)
         await step.run("send-connection-reminder",async()=>{
             const connection =await Connection.findById(connectionId).populate("from_user_id to_user_id")
             if(connection.status==="accepted"){
@@ -102,21 +102,25 @@ const sendNewConnectionReminder=inngest.createFunction(
     }
 )}
 )
-const deleteStory=inngest.createFunction(
-    {id:"story-delete"},
-    {event:"app/story.delete"},
-    async({event,step})=>{
-        const storyId=event.data.storyId
-        const in24H=new Date(Date.now() + 24 * 60 * 60 *1000)
-        await step.sleepUntil("wait-for-24h",in24H)
-        await step.run("delete-story",async()=>{
-            await Story.findByIdAndDelete(storyId)
-            return {message:"story deleted"}
-        })
-    }
+const deleteStory = inngest.createFunction(
+  { id: "story-delete" },
+  { event: "app/story.delete" },
+  async ({ event, step }) => {
+    const storyId = event.data.storyId
+    const in24H = new Date(Date.now() + 24 * 1000) // 24 ثانية للتجربة
+    console.log("Scheduled to delete:", storyId, "at", in24H)
+    await step.sleepUntil("wait-for-24s", in24H)
+    await step.run("delete-story", async () => {
+      const story = await Story.findById(storyId)
+      if (!story) return { message: "story already deleted or not found" }
+      await story.deleteOne()
+      console.log("Story deleted successfully:", storyId)
+      return { message: "story deleted successfully" }
+    })
+  }
 )
 const sendNavigationOfUnseenMasseges=inngest.createFunction(
-    {id:"send-unssen-messages-notification"},
+    {id:"send-unseen-messages-notification"},
     {cron:"TZ=America/New_York 0 9 * * *"},
     async ({step})=>{
         const messages=await Message.find({seen:false}).populate("to_user_id")

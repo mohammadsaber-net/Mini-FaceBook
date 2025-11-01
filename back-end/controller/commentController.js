@@ -1,9 +1,10 @@
 import { imagekit } from "../configs/imagekit.js"
+import { catchErrorMidelware, handleError } from "../middleware/authentication.js"
 import { Comment } from "../model/comments.js"
 import { Post } from "../model/posts.js"
 import fs from "fs"
-export const addComment = async (req, res) => {
-    try {
+export const addComment =catchErrorMidelware( 
+    async (req, res,next) => {
         const { userId } = req.auth()
         const { postId, content, type_comment } = req.body
         let image_url = []
@@ -38,10 +39,7 @@ export const addComment = async (req, res) => {
         }
         const post = await Post.findById(postId)
         if (!post) {
-            return res.status(404).json({
-                success: false,
-                message: "Post not found"
-            })
+            return handleError("post not available",404,next)
         }
 
         const newComment = await Comment.create({
@@ -60,24 +58,13 @@ export const addComment = async (req, res) => {
         message: "Comment added successfully",
         comment: commentPopulated,
         });
-    } catch (error) {
-        console.error("Error adding comment:", error)
-        return res.status(500).json({
-            success: false,
-            message: error.message
-        })
-    }
-}
-export const likeComment=async(req,res)=>{
-    try {
+})
+export const likeComment=catchErrorMidelware( async(req,res,next)=>{
         const {userId}=req.auth()
         const {commentId}=req.body
         const comment=await Comment.findById(commentId)
         if (!comment) {
-            return res.status(404).json({
-                success:false,
-                message:"Comment not found"
-            })
+            return handleError("comment not available",404,next)
         }
         if(comment.likes_count.includes(userId)){
             comment.likes_count=comment.likes_count.filter(user=>user !== userId)
@@ -90,11 +77,4 @@ export const likeComment=async(req,res)=>{
             const updatedComment = await Comment.findById(commentId).populate('user', 'full_name profile_picture');
             return res.status(201).json({success:true,comment:updatedComment,message:"comment liked"})
         }
-    } catch (error) {
-        console.error("Error liked comment:", error)
-        return res.status(500).json({
-            success: false,
-            message: error.message
-        })
-    }
-}
+})

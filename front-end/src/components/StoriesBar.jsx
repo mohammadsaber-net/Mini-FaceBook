@@ -23,7 +23,7 @@ function StoriesBar() {
     <div className=" overflow-x-auto w-[calc(100vw-50px)] md:w-[calc(100vw-300px)] relative ">
       <div className="flex gap-4 pb-5">
          
-        <div onClick={()=>setShowModel(true)} className="min-w-30
+        <div onClick={()=>dispatch(setShowModel(true))} className="min-w-30
         hover:shadow-lg transition-all duration-300 hover:bg-zinc-300 border-dashed cursor-pointer border me-2 rounded-md md:rounded-lg border-indigo-600
         shadow-sm max-w-30">
             <div className="flex flex-col h-full items-center justify-center p-4">
@@ -59,6 +59,7 @@ function StoriesBar() {
             </div>
         )})}
       </div>
+      {}
       {veiwStory&& <StoryView setveiwStory={setveiwStory} veiwStory={veiwStory}/>}
     </div>
   )

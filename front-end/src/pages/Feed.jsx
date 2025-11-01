@@ -39,7 +39,7 @@ function Feed(){
             <div className="hidden md:block w-60 bg-white">
                 <div className="fixed w-60 top-15 left-5">
                     <Sponsore />
-                   <RecentMessage />
+                   {/* <RecentMessage /> */}
                 </div>
             </div>
             <div className="pt-10">

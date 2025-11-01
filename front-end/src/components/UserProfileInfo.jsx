@@ -1,6 +1,5 @@
-import { Calendar, ListEnd, MapPin, MessageCircle, PenBox, Verified } from 'lucide-react'
+import { Calendar, MapPin, MessageCircle, PenBox, ShieldBan, Verified } from 'lucide-react'
 import moment from 'moment'
-import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import ResponsiveImage from "./responsiveImage.jsx";
@@ -59,7 +58,7 @@ export default function UserProfileInfo(param) {
                     }
                 </div>
                 {currentUser._id !== profileId && <div onClick={()=>handleBlock()} className='absolute top-2 right-2 text-gray-600 hover:text-gray-900 transition cursor-pointer'>
-                  <ListEnd />
+                  <ShieldBan />
                 </div>}
                 <p className='text-gray-700 text-sm max-w-md mt-4 '>
                     {addUser.bio}

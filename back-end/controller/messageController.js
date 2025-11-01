@@ -1,10 +1,10 @@
 import { imagekit } from "../configs/imagekit.js"
 import fs from "fs"
 import { Message } from "../model/messages.js"
+import { catchErrorMidelware } from "../middleware/authentication.js"
 
 const connections={}
-export const sseController=(req,res)=>{
-    try {
+export const sseController=catchErrorMidelware((req,res,next)=>{
         const {userId}=req.params
         res.setHeader("Content-Type","text/event-stream")
         res.setHeader("Cache-Control","no-cache")
@@ -15,16 +15,8 @@ export const sseController=(req,res)=>{
         res.on("close",()=>{
             delete connections[userId]
         })
-
-    } catch (error) {
-        return res.status(500).json({
-                success:false,
-                message:error.message
-            })
-    }
-}
-export const sendMessage=async(req,res)=>{
-    try {
+})
+export const sendMessage=catchErrorMidelware(async(req,res,next)=>{
         const {userId}=req.auth()
         const {to_user_id,text}=req.body
         let media_url=""
@@ -54,23 +46,21 @@ export const sendMessage=async(req,res)=>{
             media_url,
 
         })
+        await inngest.send({
+        name: "app/message.sent",
+        data: { messageId: message._id }
+        });
+
         res.json({
             success:true,
             message
         })
-        const MessagewithUserData=await Message.findById(message._id).populate("from_user_id")
+        // const MessagewithUserData=await Message.findById(message._id).populate("from_user_id")
         if(connections[to_user_id]){
             connections[to_user_id].write(`data: ${JSON.stringify({ message: "connected" })}\n\n`)
         }
-    } catch (error) {
-        return res.status(500).json({
-                success:false,
-                message:error.message
-            })
-    }
-}
-export const getChatMessages=async(req,res)=>{
-    try {
+})
+export const getChatMessages=catchErrorMidelware(async(req,res,next)=>{
         const {userId}=req.auth()
         const {messageId}=req.body
         const message=await Message.find(
@@ -83,15 +73,8 @@ export const getChatMessages=async(req,res)=>{
             ,{seen:true}
         )
         res.json({success:true,message})
-    } catch (error) {
-        return res.status(500).json({
-                success:false,
-                message:error.message
-            })
-    }
-} 
-export const getUserRecentMessages=async(req,res)=>{
-    try {
+} )
+export const getUserRecentMessages=catchErrorMidelware(async(req,res,next)=>{
         const {userId}=req.auth()
         const messages=await Message.find({
         $or: [
@@ -100,11 +83,4 @@ export const getUserRecentMessages=async(req,res)=>{
         ]
         }).populate("to_user_id from_user_id").sort({createdAt:-1})
         res.status(200).json({success:true,messages})
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json({
-            success:false,
-            message:error.message
-        })
-    }
-} 
+} )
