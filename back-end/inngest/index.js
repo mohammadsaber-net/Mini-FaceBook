@@ -107,14 +107,12 @@ const deleteStory = inngest.createFunction(
   { event: "app/story.delete" },
   async ({ event, step }) => {
     const storyId = event.data.storyId
-    const in24H = new Date(Date.now() + 24 * 1000) // 24 ثانية للتجربة
-    console.log("Scheduled to delete:", storyId, "at", in24H)
+    const in24H = new Date(Date.now() + 24 * 60 * 60 * 1000)
     await step.sleepUntil("wait-for-24s", in24H)
     await step.run("delete-story", async () => {
       const story = await Story.findById(storyId)
       if (!story) return { message: "story already deleted or not found" }
       await story.deleteOne()
-      console.log("Story deleted successfully:", storyId)
       return { message: "story deleted successfully" }
     })
   }
