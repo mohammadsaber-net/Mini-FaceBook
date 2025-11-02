@@ -57,8 +57,14 @@ export default function UserProfileInfo(param) {
                         </button>
                     }
                 </div>
-                {currentUser._id !== profileId && <div onClick={()=>handleBlock()} className='absolute top-2 right-2 text-gray-600 hover:text-gray-900 transition cursor-pointer'>
+                {currentUser._id !== profileId && <div onClick={()=>handleBlock()} className='absolute top-2 group right-2 text-gray-600 hover:text-gray-900 transition cursor-pointer'>
                   <ShieldBan />
+                  <span
+                    class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block 
+           bg-black text-white text-xs rounded px-2 py-1"
+                  >
+                    block
+                  </span>
                 </div>}
                 <p className='text-gray-700 text-sm max-w-md mt-4 '>
                     {addUser.bio}

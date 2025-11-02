@@ -1,6 +1,6 @@
 import { ArrowDown, ArrowRight, BookLock, FilePlus, ImagePlus, Megaphone, Newspaper, Search, ShoppingBasket } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { FaUserFriends } from 'react-icons/fa'
+import { FaConnectdevelop, FaUserFriends } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
 import { setShowModel, setShowPost } from '../redux/models/showModels'
 import { useEffect, useState } from 'react'
@@ -78,13 +78,13 @@ export default function List({setList}) {
            Advertisement
           </Link>
         </div>
-      <div className='bg-white shadow-md overflow-hidden min-h-80 p-2 w-64 rounded-lg'>
+      <div className='bg-white shadow-md overflow-x-auto h-96 p-2 w-64 rounded-lg'>
         <div className='mt-0 mb-4 border-b border-gray-300'>
           <h3>community</h3>
         <Link onClick={()=>setList(false)} to={"/connections"} className='gap-1 transition hover:bg-gray-200 p-2 rounded-sm cursor-pointer flex align-center'>
 
             <div className=''>
-              <FaUserFriends className='text-blue-600 size-6'/>
+              <FaConnectdevelop className='text-blue-600 size-6'/>
             </div>
             <div>
               <h4>connections</h4>
@@ -99,6 +99,16 @@ export default function List({setList}) {
             <div>
               <h4>Posts</h4>
               <p className='text-gray-500'>view your posts</p>
+            </div>
+        </Link>
+        <Link onClick={()=>setList(false)} to={"/friends"} className='gap-1 transition hover:bg-gray-200 p-2 rounded-sm cursor-pointer flex align-center'>
+
+            <div className=''>
+              <FaUserFriends className='text-sky-600 size-6'/>
+            </div>
+            <div>
+              <h4>Friends</h4>
+              <p className='text-gray-500'>view your friends</p>
             </div>
         </Link>
         </div>

@@ -19,6 +19,7 @@ import Sponsore from "./components/sponsore"
 import OnePost from "./components/onePost"
 import RecentMessage from "./components/RecentMessage"
 import SignUpPage from "./pages/sign-up"
+import Friends from "./pages/Friends"
 
 function App() {
   const {user}=useUser() 
@@ -68,6 +69,7 @@ function App() {
       <Route path="/connections" element={<Connection />}/>
       <Route path="/recentmessage" element={<RecentMessage />}/>
       <Route path="/sponsore" element={<Sponsore />}/>
+      <Route path="/friends" element={<Friends />}/>
       <Route path="/createPost" element={<CreatePosts />}/>
       <Route path="/discover" element={<Discover />}/>
       <Route path="/post/:postId" element={<OnePost />}/>

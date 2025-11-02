@@ -11,7 +11,9 @@ export default function RecentMessage() {
     },[messages])
   return (
     <div className='w-full min-h-[calc(100vh-220px)] text-xs sm:text-base bg-white rounded-md p-1 text-slate-800'>
-      
+      {message.length===0&&<div className='text-blue-600'>
+        No Messages yet
+        </div>}
       <div className='flex flex-col bg-white'>
         {message.map((mes,ind)=>{
             return(<Link to={`/messages/${mes.from_user_id._id}`} key={ind} className='flex group items-center p-1 hover:bg-blue-400 transition-all hover:text-white duration-200 mb-2 shadow'

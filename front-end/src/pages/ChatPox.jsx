@@ -7,6 +7,7 @@ import { useAuth } from "@clerk/clerk-react"
 import { addMessages, fetchMessages, resetMessages } from "../redux/messages/messages.js"
 import toast from "react-hot-toast"
 import api from "../api/axios.js"
+import { fetchBlock } from "../redux/block/block.js"
 
 function ChatBox(){
     const {messages}=useSelector(state=>state.messages)
@@ -14,8 +15,8 @@ function ChatBox(){
     const {getToken}=useAuth()
     const dispatch=useDispatch()
 
-
-
+    const blockedUser=useSelector(state=>state.user?.user)
+    console.log(blockedUser)
     const [user,setUser]=useState(null)
     const [text,setText]=useState("")
     const [image, setImage]=useState(null)

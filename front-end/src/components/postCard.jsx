@@ -101,7 +101,7 @@ export default function PostCard({post,addUser}) {
             <div onClick={handleLikes} className="flex-cent cursor-pointer text-sm gap-2.5">
                  Like <ThumbsUp
                     className={`w-4 h-4 ${
-                        likes.includes(user._id) || likes.includes(addUser._id) ? "text-blue-600 fill-blue-600" : ""
+                        likes.includes(user?._id) || likes.includes(addUser?._id) ? "text-blue-600 fill-blue-600" : ""
                     }`}
                 />
             </div>

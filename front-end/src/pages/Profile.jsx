@@ -71,7 +71,6 @@ export default function Profile() {
                     activeTab === "addPost"&&
                     <div className='flex-col items-center gap-6 flex '>     
                        {addPost.map((post)=>{
-                        console.log(post)
                         return(
                             <PostCard key={post._id} addUser={addUser} post={post} />
                         )
