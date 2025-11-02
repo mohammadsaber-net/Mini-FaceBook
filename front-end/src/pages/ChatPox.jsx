@@ -7,8 +7,6 @@ import { useAuth } from "@clerk/clerk-react"
 import { addMessages, fetchMessages, resetMessages } from "../redux/messages/messages.js"
 import toast from "react-hot-toast"
 import api from "../api/axios.js"
-import { fetchBlock } from "../redux/block/block.js"
-
 function ChatBox(){
     const {messages}=useSelector(state=>state.messages)
     const {userId}=useParams()
@@ -16,7 +14,6 @@ function ChatBox(){
     const dispatch=useDispatch()
 
     const blockedUser=useSelector(state=>state.user?.user)
-    console.log(blockedUser)
     const [user,setUser]=useState(null)
     const [text,setText]=useState("")
     const [image, setImage]=useState(null)
@@ -104,7 +101,9 @@ function ChatBox(){
                 </div>
                 <div ref={messageEndRef}>
                 </div>
-                <div className="px-4 mt-auto mb-0">
+                {blockedUser.blocked.includes(userId)?<div>
+                    you can't message this user, you are no longer friends<p>You have blocked this user</p>
+                </div>:<div className="px-4 mt-auto mb-0">
                     <div className="flex items-center gap-1 sm:gap-3 pl-5 p-1.5 w-full bg-white max-w-xl mx-auto border border-gray-300 shadow rounded-lg mb-5">
                     
                         <input className="flex-1 outline-none text-slate-700" placeholder="type a message" onKeyDown={e=>e.key==="Enter"&& sendMessage()}
@@ -124,7 +123,7 @@ function ChatBox(){
                                 <SendHorizonal size={18}/>
                             </button>
                     </div>
-                </div>
+                </div>}
             </div>
         
     )

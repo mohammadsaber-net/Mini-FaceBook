@@ -2,13 +2,22 @@ import { useEffect, useState } from 'react'
 import { assets} from '../assets/assets'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { useAuth } from '@clerk/clerk-react'
+import { fetchRecentMessages } from '../redux/messages/recentMessages'
 export default function RecentMessage() {
-    const [message,setMessage]=useState([])
-    const {messages}=useSelector(state=>state.recentMessage)
+  const {messages}=useSelector(state=>state.recentMessage)
+  const {getToken}=useAuth()
+  const [message,setMessage]=useState([])
+    const dispatch=useDispatch()
     useEffect(()=>{
-      setMessage(messages||[])
-    },[messages])
+      getToken().then(token=>{
+        dispatch(fetchRecentMessages(token))
+      })
+    },[])
+    useEffect(()=>{
+      setMessage(messages)
+    },[message])
   return (
     <div className='w-full min-h-[calc(100vh-220px)] text-xs sm:text-base bg-white rounded-md p-1 text-slate-800'>
       {message.length===0&&<div className='text-blue-600'>

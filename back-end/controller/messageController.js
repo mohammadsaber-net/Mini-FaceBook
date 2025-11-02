@@ -55,7 +55,7 @@ export const sendMessage=catchErrorMidelware(async(req,res,next)=>{
             success:true,
             message
         })
-        // const MessagewithUserData=await Message.findById(message._id).populate("from_user_id")
+        const MessagewithUserData=await Message.findById(message._id).populate("from_user_id")
         if(connections[to_user_id]){
             connections[to_user_id].write(`data: ${JSON.stringify({ message: "connected" })}\n\n`)
         }
@@ -74,13 +74,18 @@ export const getChatMessages=catchErrorMidelware(async(req,res,next)=>{
         )
         res.json({success:true,message})
 } )
-export const getUserRecentMessages=catchErrorMidelware(async(req,res,next)=>{
-        const {userId}=req.auth()
-        const messages=await Message.find({
-        $or: [
-            { from_user_id: userId },
-            { to_user_id: userId }
-        ]
-        }).populate("to_user_id from_user_id").sort({createdAt:-1})
-        res.status(200).json({success:true,messages})
-} )
+export const getUserRecentMessages = catchErrorMidelware(async (req, res, next) => {
+  const { userId } = req.auth();
+
+  const messages = await Message.find({
+    $or: [
+      { from_user_id: userId },
+      { to_user_id: userId }
+    ]
+  })
+    .populate("to_user_id from_user_id")
+    .sort({ createdAt: -1 });
+
+  res.status(200).json({ success: true, messages });
+});
+
