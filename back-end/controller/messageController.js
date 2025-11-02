@@ -1,7 +1,8 @@
 import { imagekit } from "../configs/imagekit.js"
 import fs from "fs"
 import { Message } from "../model/messages.js"
-import { catchErrorMidelware } from "../middleware/authentication.js"
+import { catchErrorMidelware, handleError } from "../middleware/authentication.js"
+import { FaceUser } from "../model/FaceUser.js"
 
 const connections={}
 export const sseController=catchErrorMidelware((req,res,next)=>{
@@ -20,6 +21,10 @@ export const sendMessage=catchErrorMidelware(async(req,res,next)=>{
         const {userId}=req.auth()
         const {to_user_id,text}=req.body
         let media_url=""
+        const user=await FaceUser.findById(userId).populate("blocked")
+        if(user.blocked.includes(to_user_id)){
+            handleError("you blocked this user",404,next)
+        }
         const image =req.file
         const message_type=image?"image":"text"
         if(message_type==="image"){

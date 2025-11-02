@@ -39,7 +39,7 @@ function LayOut(){
             <Navbar />
             {showModel&& <StoryModel/>}
             {showPost&& <CreatePosts/>}
-            <SideBar sideOpen={sideOpen} setSideOpen={setSideOpen} />
+            {/* <SideBar sideOpen={sideOpen} setSideOpen={setSideOpen} /> */}
             <div className="bg-gray-100 mt-8 w-screen">
                 <Outlet />
             </div>

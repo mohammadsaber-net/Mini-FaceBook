@@ -26,7 +26,13 @@ export default function List({setList}) {
       console.error("Failed to unblock user:", error)
     }
   }
-
+  useEffect(()=>{
+    if(block){
+      getToken().then(async(token)=>{
+      dispatch(fetchUser(token))
+    })
+    }
+  },[block])
   useEffect(()=>{
     getToken().then(async(token)=>{
       dispatch(fetchUser(token))

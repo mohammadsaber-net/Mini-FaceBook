@@ -8,8 +8,6 @@ import { useAuth } from "@clerk/clerk-react"
 import api from "../api/axios.js"
 import toast from "react-hot-toast"
 import Sponsore from "../components/sponsore.jsx"
-import { fetchRecentMessages } from "../redux/messages/recentMessages.js"
-import CreatePosts from "./CreatePost.jsx"
 import SetPost from "../components/setPost.jsx"
 function Feed(){
     const [feeds,setFeeds]=useState([])
