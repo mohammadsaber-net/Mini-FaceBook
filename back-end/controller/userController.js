@@ -134,7 +134,7 @@ export const getUserProfile=catchErrorMidelware(async(req,res,next)=>{
         const {userId}=req.auth()
         const {id}=req.body
         const profile=await FaceUser.findById(id).populate("followers following connections")
-        const posts=await Post.find({user:id}).populate("likes_count user").sort({createdAt:-1})
+        const posts=await Post.find({user:id}).populate("user").sort({createdAt:-1})
         res.status(200).json({
             success:true,
             profile,

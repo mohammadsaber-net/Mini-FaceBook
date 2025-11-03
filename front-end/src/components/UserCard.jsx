@@ -50,7 +50,7 @@ export default function UserCard(users) {
     <div key={user._id} className='p-4 pt-6 flex max-w-64 bg-white flex-col justify-between rou-md
      border-gray-200 border'>
         <div className='text-center'>
-        <div className='mx-auto shadow-md rounded-full overflow-hidden mx-auto  border-gray-500 w-12 h-10'>
+        <div className='mx-auto shadow-md rounded-full overflow-hidden mx-auto  border-gray-500 w-12 h-12'>
             <ResponsiveImage src={user.profile_picture} className='size-8
          ' alt="" />
         </div>

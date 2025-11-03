@@ -18,7 +18,6 @@ export default function RecentMessage() {
     },[])
     useEffect(()=>{
       setMessage(messages)
-      console.log(messages)
     },[messages])
   return (
     <div className='w-full min-h-[calc(100vh-220px)] text-xs sm:text-base bg-white rounded-md p-1 text-slate-800'>

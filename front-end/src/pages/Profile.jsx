@@ -72,7 +72,7 @@ export default function Profile() {
                     <div className='flex-col items-center gap-6 flex '>     
                        {addPost.map((post)=>{
                         return(
-                            <PostCard key={post._id} addUser={addUser} post={post} />
+                            <PostCard key={post._id} id={currentUser._id} addUser={addUser} post={post} />
                         )
                     })}
                     </div>

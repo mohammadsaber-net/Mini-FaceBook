@@ -1,12 +1,15 @@
-import { Calendar, MapPin, MessageCircle, PenBox, ShieldBan, Verified } from 'lucide-react'
+import { Calendar, MapPin, MessageCircle, PenBox, ShieldBan, UserPlus, Verified } from 'lucide-react'
 import moment from 'moment'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import ResponsiveImage from "./responsiveImage.jsx";
 import { fetchBlock } from '../redux/block/block.js'
 import { useAuth } from '@clerk/clerk-react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { fetchUser } from '../redux/user/userSlice.js'
+import { FaJediOrder } from 'react-icons/fa';
+import api from '../api/axios.js';
+import toast from 'react-hot-toast';
 export default function UserProfileInfo(param) {
   const {addPost,addUser,profileId,setShowEdit}=param
   const navigate=useNavigate()
@@ -23,13 +26,35 @@ export default function UserProfileInfo(param) {
       navigate("/")
     }
   },[block])
+  const [request, setRequest] = useState(false);
+  useEffect(()=>{
+    if(currentUser._id !== profileId){
+      if(!currentUser.connections.includes(profileId)){
+        setRequest(true)
+      }
+    }
+  },[])
+  const handleConnectionsRequests=async()=>{
+        try {
+            const {data}=await api.post("/api/connection/send",{id:profileId},{
+                headers:{Authorization:`Bearer ${await getToken()}`}
+            })
+            if(data.success){
+                toast.success(data.message)
+            }else{
+                toast.success(data.message)
+            }
+        } catch (error) {
+            toast.success(error.message)
+        }
+    }
   useEffect(()=>{
       getToken().then(async(token)=>{
         dispatch(fetchUser(token))
       })
     },[dispatch])
-  return (
-    <div className='relative bg-white md:px-8 py-4 px-6'>
+    return (
+      <div className='relative bg-white md:px-8 py-4 px-6'>
       <div className='flex flex-col md:flex-row items-start gap-6'>
         <div className='size-32 border-4 border-white shadow-lg overflow-hidden absolute rounded-full -top-16'>
             <ResponsiveImage src={addUser.profile_picture} className='absolute rounded-full z-20' alt="" />
@@ -38,13 +63,24 @@ export default function UserProfileInfo(param) {
         <div className='w-full pt-16 md:pt-0 md:pl-36'>
                 <div className='flex flex-col md:flex-row items-start justify-between'>
                     <div>
-                        <div className='flex items-center gap-3 '>
-                               <h2 className='text-2xl font-bold text-gray-900 '>
+                        <div className='flex items-center gap-7'>
+                               <div className='flex items-center gap-3'>
+                                <h2 className='text-2xl font-bold text-gray-900 '>
                                 {
                                     addUser.full_name
                                 }
                                 </h2>
                                 <Verified className='text-blue-500 size-6'/>
+                               </div>
+                                {request && <div onClick={()=>handleConnectionsRequests()} className='group relative text-gray-600 hover:text-gray-900 transition cursor-pointer'>
+                                  <UserPlus />
+                                  <span
+                                    class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block 
+                                     bg-black text-white text-xs rounded px-2 py-1"
+                                  >
+                                    send Request
+                                  </span>
+                                </div>}
                         </div>
                         <p className='text-gray-500'>{addUser.username?`@${addUser.username}`:"add a username"}</p>
                     </div>
@@ -66,6 +102,7 @@ export default function UserProfileInfo(param) {
                     block
                   </span>
                 </div>}
+                
                 <p className='text-gray-700 text-sm max-w-md mt-4 '>
                     {addUser.bio}
                 </p>

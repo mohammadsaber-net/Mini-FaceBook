@@ -9,11 +9,11 @@ import { useSelector } from "react-redux";
 import ResponsiveImage from "./responsiveImage.jsx";
 import { FaComment, FaShare } from "react-icons/fa";
 import LeaveComment from "./LeaveComment.jsx";
-export default function PostCard({post,addUser}) {
+export default function PostCard({post,id,addUser}) {
     const navigate=useNavigate()
     const {getToken}=useAuth()
-    // const user=useSelector(state=>state.user?.user)
-    const {userId}=useAuth()
+    const ruserId=useSelector(state=>state.user?.user._id)
+    const userId = id || ruserId;
     const location=useLocation()
     const postWithHashtags = post.content?.replace(
   /(#\w+)/g,
@@ -29,10 +29,10 @@ export default function PostCard({post,addUser}) {
             if(data.success){
                 toast.success(data.message) 
                  setLikes((prevLikes) => {
-                    if (prevLikes.includes(currentUser._id)) {
-                    return prevLikes.filter((id) => id !== currentUser._id);
+                    if (prevLikes.includes(userId)) {
+                    return prevLikes.filter((id) => id !== userId);
                     } else {
-                    return [...prevLikes, currentUser._id];
+                    return [...prevLikes, userId];
                     }
                 });   
             }
@@ -42,6 +42,7 @@ export default function PostCard({post,addUser}) {
     }
     return (
     <div  className="bg-white space-y-4 w-full max-w-md m-auto mb-2 p-4 shadow rounded-xl">
+        
       <div >
         <img  onClick={()=>navigate(`/profile/${currentUser._id}`)} className="w-10 h-10 cursor-pointer rounded-full shadow" src={post.user&&currentUser.profile_picture} alt="" />
         <div className="">
@@ -81,8 +82,7 @@ export default function PostCard({post,addUser}) {
             </div>
             <div className="flex gap-1 align-center">
                 <ThumbsUp className="text-gray-600"/>
-                {console.log(likes)}
-                <span>{likes?.length>0 ? likes.length : ""}</span>
+                <span>{likes?.length> 0 ? likes.length : ""}</span>
             </div>
         </div>
         <div className="flex justify-between text-sm sm:text-base px-2 pt-2 border-t border-gray-300  md:gap-4 items-center"> 
@@ -96,11 +96,11 @@ export default function PostCard({post,addUser}) {
                Comment 
                 <MessageCircle className="w-4 h-4"/>
             </Link>
-            
             <div onClick={handleLikes} className="flex-cent cursor-pointer text-sm gap-2.5">
                  Like <ThumbsUp
                     className={`w-4 h-4 ${
-                        likes.includes(userId) ? "text-blue-600 fill-blue-600" : "text-gray-600 fill-gray-600"
+                        likes.includes(userId)
+                        ? "text-blue-600 fill-blue-600" : "text-gray-600 fill-gray-600"
                     }`}
                 />
             </div>
