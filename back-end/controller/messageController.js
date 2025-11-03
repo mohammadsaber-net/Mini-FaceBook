@@ -84,26 +84,8 @@ export const getChatMessages=catchErrorMidelware(async(req,res,next)=>{
         )
         res.json({success:true,message})
 } )
-// export const getUserRecentMessages = catchErrorMidelware(async (req, res, next) => {
-//   const { userId } = req.auth();
-
-//   const messages = await Message.find({
-//     $or: [
-//       { from_user_id: userId },
-//       { to_user_id: userId }
-//     ]
-//   }).sort({ createdAt: -1 });
-
-//   const formattedMessages = messages.map(msg => ({
-//     ...msg.toObject(),
-//     isIncoming: msg.to_user_id === userId,
-//     isOutgoing: msg.from_user_id === userId,
-//   }));
-
-//   res.status(200).json({ success: true, messages: formattedMessages });
-// });
 export const getUserRecentMessages = catchErrorMidelware(async (req, res, next) => {
-  const { userId } = req.auth(); // Clerk userId (string)
+  const { userId } = req.auth();
 
   const messages = await Message.aggregate([
     {
@@ -115,7 +97,7 @@ export const getUserRecentMessages = catchErrorMidelware(async (req, res, next) 
       },
     },
     {
-      $sort: { createdAt: -1 }, // ← نرتب من الأحدث
+      $sort: { createdAt: -1 },
     },
     {
       $group: {
@@ -126,13 +108,11 @@ export const getUserRecentMessages = catchErrorMidelware(async (req, res, next) 
             { from: "$from_user_id", to: "$to_user_id" },
           ],
         },
-        lastMessage: { $first: "$$ROOT" }, // ← أول واحدة بعد الـ sort = آخر رسالة
+        lastMessage: { $first: "$$ROOT" },
       },
     },
-    { $replaceRoot: { newRoot: "$lastMessage" } }, // ← علشان نرجع الرسائل مباشرة بدون nested
+    { $replaceRoot: { newRoot: "$lastMessage" } },
   ]);
-
-  // populate sender and receiver
   await Message.populate(messages, {
     path: "from_user_id to_user_id",
     select: "full_name profile_picture email username bio",
@@ -140,59 +120,3 @@ export const getUserRecentMessages = catchErrorMidelware(async (req, res, next) 
 
   res.status(200).json({ success: true, messages });
 });
-
-// export const getUserRecentMessages = catchErrorMidelware(async (req, res, next) => {
-//   const { userId } = req.auth(); // Clerk userId (string)
-
-//   const messages = await Message.aggregate([
-//     {
-//       $match: {
-//         $or: [
-//           { to_user_id: userId },
-//           { from_user_id: userId },
-//         ],
-//       },
-//     },
-//     { $sort: { createdAt: -1 } },
-//     {
-//       $group: {
-//         _id: {
-//           $cond: [
-//             { $gt: ["$from_user_id", "$to_user_id"] },
-//             { from: "$to_user_id", to: "$from_user_id" },
-//             { from: "$from_user_id", to: "$to_user_id" },
-//           ],
-//         },
-//         lastMessage: { $first: "$$ROOT" },
-//       },
-//     },
-//     // ⬇️ هنا نعمل populate عن طريق $lookup بدل mongoose.populate
-//     {
-//       $lookup: {
-//         from: "faceusers", // اسم الكولكشن في Mongo (بيكون lowercase وplural تلقائيًا)
-//         localField: "lastMessage.from_user_id",
-//         foreignField: "_id",
-//         as: "from_user_id",
-//       },
-//     },
-//     { $unwind: "$from_user_id" },
-//     {
-//       $lookup: {
-//         from: "faceusers",
-//         localField: "lastMessage.to_user_id",
-//         foreignField: "_id",
-//         as: "to_user_id",
-//       },
-//     },
-//     { $unwind: "$to_user_id" },
-//   ]);
-
-// //   const messages = await Message.find({
-// //     $or: [
-// //       { to_user_id: userId },
-// //       { from_user_id: userId},
-// //     ]
-// //   }).populate("from_user_id to_user_id").sort({ createdAt: -1 });
-//   res.status(200).json({ success: true, messages });
-// });
-

@@ -176,6 +176,16 @@ export const blocked=catchErrorMidelware(async(req,res,next)=>{
            blockedUser.connections=blockedUser.connections.filter(id=>id !==userId)
            blockedUser.following=blockedUser.following.filter(id=>id !==userId)
            blockedUser.followers=blockedUser.followers.filter(id=>id !==userId)
+           const userPosts=await Post.find({user:userId})
+           const blockedUserPosts=await Post.find({user:blockedId})
+           userPosts.forEach(async(post)=>{
+                post.likes_count=post.likes_count.filter(id=>id !== blockedId)
+                await post.save()
+           })
+           blockedUserPosts.forEach(async(post)=>{
+                post.likes_count=post.likes_count.filter(id=>id !== userId)
+                await post.save()
+           })
            await user.save()
            await blockedUser.save()
             res.status(200).json({

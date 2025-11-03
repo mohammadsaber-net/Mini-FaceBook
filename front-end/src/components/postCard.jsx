@@ -12,7 +12,8 @@ import LeaveComment from "./LeaveComment.jsx";
 export default function PostCard({post,addUser}) {
     const navigate=useNavigate()
     const {getToken}=useAuth()
-    const user=useSelector(state=>state.user?.user)
+    // const user=useSelector(state=>state.user?.user)
+    const {userId}=useAuth()
     const location=useLocation()
     const postWithHashtags = post.content?.replace(
   /(#\w+)/g,
@@ -39,9 +40,6 @@ export default function PostCard({post,addUser}) {
             toast.error(error.message)
         }
     }
-    useEffect(()=>{
-        
-    },[likes]) 
     return (
     <div  className="bg-white space-y-4 w-full max-w-md m-auto mb-2 p-4 shadow rounded-xl">
       <div >
@@ -83,7 +81,8 @@ export default function PostCard({post,addUser}) {
             </div>
             <div className="flex gap-1 align-center">
                 <ThumbsUp className="text-gray-600"/>
-                <span>{likes?.length}</span>
+                {console.log(likes)}
+                <span>{likes?.length>0 ? likes.length : ""}</span>
             </div>
         </div>
         <div className="flex justify-between text-sm sm:text-base px-2 pt-2 border-t border-gray-300  md:gap-4 items-center"> 
@@ -101,7 +100,7 @@ export default function PostCard({post,addUser}) {
             <div onClick={handleLikes} className="flex-cent cursor-pointer text-sm gap-2.5">
                  Like <ThumbsUp
                     className={`w-4 h-4 ${
-                        likes.includes(user?._id) || likes.includes(addUser?._id) ? "text-blue-600 fill-blue-600" : ""
+                        likes.includes(userId) ? "text-blue-600 fill-blue-600" : "text-gray-600 fill-gray-600"
                     }`}
                 />
             </div>

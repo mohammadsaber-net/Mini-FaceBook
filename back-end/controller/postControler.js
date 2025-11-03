@@ -66,15 +66,18 @@ export const likePost=catchErrorMidelware(async(req,res,next)=>{
         const {userId}=req.auth()
         const {postId}=req.body
         const post=await Post.findById(postId)
+        console.log(post);
         if(!post){
            return handleError("post not found",404,next)
         }
         if(post.likes_count.includes(userId)){
             post.likes_count=post.likes_count.filter(user=>user !== userId)
+            console.log("unliked",post.likes_count);
             await post.save()
             return res.status(201).json({success:true,message:"post unliked"})
         }else{
             post.likes_count.push(userId)
+            console.log("liked",post.likes_count);
             await post.save()
             return res.status(201).json({success:true,message:"post liked"})
         }
