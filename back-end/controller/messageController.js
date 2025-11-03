@@ -111,7 +111,7 @@ export const getUserRecentMessages = catchErrorMidelware(async (req, res, next) 
       { to_user_id: userId },
       { from_user_id: userId},
     ]
-  }).sort({ createdAt: -1 });
+  }).populate("from_user_id to_user_id").sort({ createdAt: -1 });
   res.status(200).json({ success: true, messages });
 });
 

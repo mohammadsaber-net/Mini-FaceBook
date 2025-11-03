@@ -14,8 +14,8 @@ export default function SetPost() {
         <div onClick={()=>dispatch(setShowPost(true))} className='bg-gray-100 mb-4 sm:px-4 p-2 w-full text-gray-500 rounded-full'>
             what is your thoughts ? 
         </div>
-        <Link to={`/profile/${user._id}`} className="border cursor-pointer overflow-hidden border-gray-500 size-10 rounded-full">
-            <img src={user.profile_picture} className="w-full h-full object-cover" alt="" />
+        <Link to={`/profile/${user._id}`} className="border cursor-pointer rounded-full overflow-hidden border-gray-500 w-12 h-10">
+            <img src={user.profile_picture} className="z-10" alt="" />
         </Link>
       </div>
        <div className="flex items-center justify-center gap-2">

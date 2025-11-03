@@ -11,6 +11,7 @@ import postRouter from './routes/postRoutes.js'
 import storyRouter from './routes/storyRoutes.js'
 import messageRouter from './routes/messagesRoute.js'
 import commentRouter from './routes/commentsRoutes.js'
+import { Message } from './model/messages.js'
 
 const app=express()
 await connectDb()
