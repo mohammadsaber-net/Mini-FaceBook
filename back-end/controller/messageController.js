@@ -102,8 +102,6 @@ export const getChatMessages=catchErrorMidelware(async(req,res,next)=>{
 
 //   res.status(200).json({ success: true, messages: formattedMessages });
 // });
-
-
 export const getUserRecentMessages = catchErrorMidelware(async (req, res, next) => {
   const { userId } = req.auth(); // Clerk userId (string)
 
@@ -111,12 +109,14 @@ export const getUserRecentMessages = catchErrorMidelware(async (req, res, next) 
     {
       $match: {
         $or: [
-          { to_user_id: userId },
           { from_user_id: userId },
+          { to_user_id: userId },
         ],
       },
     },
-    { $sort: { createdAt: -1 } },
+    {
+      $sort: { createdAt: -1 }, // ← نرتب من الأحدث
+    },
     {
       $group: {
         _id: {
@@ -126,36 +126,73 @@ export const getUserRecentMessages = catchErrorMidelware(async (req, res, next) 
             { from: "$from_user_id", to: "$to_user_id" },
           ],
         },
-        lastMessage: { $first: "$$ROOT" },
+        lastMessage: { $first: "$$ROOT" }, // ← أول واحدة بعد الـ sort = آخر رسالة
       },
     },
-    // ⬇️ هنا نعمل populate عن طريق $lookup بدل mongoose.populate
-    {
-      $lookup: {
-        from: "faceusers", // اسم الكولكشن في Mongo (بيكون lowercase وplural تلقائيًا)
-        localField: "lastMessage.from_user_id",
-        foreignField: "_id",
-        as: "from_user_id",
-      },
-    },
-    { $unwind: "$from_user_id" },
-    {
-      $lookup: {
-        from: "faceusers",
-        localField: "lastMessage.to_user_id",
-        foreignField: "_id",
-        as: "to_user_id",
-      },
-    },
-    { $unwind: "$to_user_id" },
+    { $replaceRoot: { newRoot: "$lastMessage" } }, // ← علشان نرجع الرسائل مباشرة بدون nested
   ]);
 
-//   const messages = await Message.find({
-//     $or: [
-//       { to_user_id: userId },
-//       { from_user_id: userId},
-//     ]
-//   }).populate("from_user_id to_user_id").sort({ createdAt: -1 });
+  // populate sender and receiver
+  await Message.populate(messages, {
+    path: "from_user_id to_user_id",
+    select: "full_name profile_picture email username bio",
+  });
+
   res.status(200).json({ success: true, messages });
 });
+
+// export const getUserRecentMessages = catchErrorMidelware(async (req, res, next) => {
+//   const { userId } = req.auth(); // Clerk userId (string)
+
+//   const messages = await Message.aggregate([
+//     {
+//       $match: {
+//         $or: [
+//           { to_user_id: userId },
+//           { from_user_id: userId },
+//         ],
+//       },
+//     },
+//     { $sort: { createdAt: -1 } },
+//     {
+//       $group: {
+//         _id: {
+//           $cond: [
+//             { $gt: ["$from_user_id", "$to_user_id"] },
+//             { from: "$to_user_id", to: "$from_user_id" },
+//             { from: "$from_user_id", to: "$to_user_id" },
+//           ],
+//         },
+//         lastMessage: { $first: "$$ROOT" },
+//       },
+//     },
+//     // ⬇️ هنا نعمل populate عن طريق $lookup بدل mongoose.populate
+//     {
+//       $lookup: {
+//         from: "faceusers", // اسم الكولكشن في Mongo (بيكون lowercase وplural تلقائيًا)
+//         localField: "lastMessage.from_user_id",
+//         foreignField: "_id",
+//         as: "from_user_id",
+//       },
+//     },
+//     { $unwind: "$from_user_id" },
+//     {
+//       $lookup: {
+//         from: "faceusers",
+//         localField: "lastMessage.to_user_id",
+//         foreignField: "_id",
+//         as: "to_user_id",
+//       },
+//     },
+//     { $unwind: "$to_user_id" },
+//   ]);
+
+// //   const messages = await Message.find({
+// //     $or: [
+// //       { to_user_id: userId },
+// //       { from_user_id: userId},
+// //     ]
+// //   }).populate("from_user_id to_user_id").sort({ createdAt: -1 });
+//   res.status(200).json({ success: true, messages });
+// });
 
