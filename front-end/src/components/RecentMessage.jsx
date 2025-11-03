@@ -30,7 +30,7 @@ export default function RecentMessage() {
                 <img src={mes.profile_picture || assets.sample_profile} className='w-8 h-8 rounded-full' alt="" />
                 <div className='w-full ms-2'>
                     <div className='flex justify-between'>
-                        <p className='font-medium overflow-hidden'>{mes.from_user_id.full_name || "ali"}</p>
+                        <p className='font-medium overflow-hidden'>{mes.from_user_id.full_name}</p>
                         <p className='text-[8px]'>{moment(mes.createdAt).fromNow()}</p>
                     </div>
                     <div className='flex justify-between'>
