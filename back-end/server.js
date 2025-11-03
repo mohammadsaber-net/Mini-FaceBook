@@ -12,12 +12,15 @@ import storyRouter from './routes/storyRoutes.js'
 import messageRouter from './routes/messagesRoute.js'
 import commentRouter from './routes/commentsRoutes.js'
 import { Message } from './model/messages.js'
+import { FaceUser } from './model/FaceUser.js'
 
 const app=express()
 await connectDb()
 app.use(express.json())
 app.use(cors())
+console.log(FaceUser.collection.name);
 app.use(clerkMiddleware())
+
 app.get("/",(req,res)=>res.send("server is running"))
 app.use("/api/inngest",serve({client:inngest,functions}))
 app.use("/api/user",userRouter)
