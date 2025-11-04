@@ -29,7 +29,7 @@ export default function UserCard(users) {
             toast.success(error.message)
         }
     }
-    const handleConnectionsRequests=async()=>{
+    const handleConnectionsRequest=async()=>{
         if(currentUser.connections.includes(user._id)){
             return navigate(`/messages/${user._id}`)
         }
@@ -84,7 +84,7 @@ export default function UserCard(users) {
                 <UserPlus className='size-4' />
                 {currentUser?.following.includes(user._id)?"following":"follow"}
             </button>
-            <button onClick={handleConnectionsRequests} className='flex-cent rounded-md w-16 group text-slate-500 border cursor-pointer active:scale-95'>
+            <button onClick={handleConnectionsRequest} className='flex-cent rounded-md w-16 group text-slate-500 border cursor-pointer active:scale-95'>
                 {
                     currentUser?.connections.includes(user._id)?<MessageCircle className='size-5 group-hover:scale-105 transition'/>
                     :<Plus className='size-5 group-hover:scale-105 transition'/>
