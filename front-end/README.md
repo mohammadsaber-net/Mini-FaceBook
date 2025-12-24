@@ -1,16 +1,64 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+```md
+# Mini Facebook – Frontend
 
-Currently, two official plugins are available:
+This project is the frontend application for a Facebook-like social media platform.
+It allows users to authenticate, interact with posts, add new posts, follow/unfollow, sends new rquests, add stories (that deleted after 24H), and navigate the platform smoothly.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🚀 Features
+- Modern UI built with **React** and **Vite**
+- Authentication using **Clerk**
+- State management with **Redux Toolkit**
+- Responsive design using **Tailwind CSS**
+- Client-side routing with **React Router**
+- Notifications with **React Hot Toast**
+- Icons using **Lucide** and **React Icons**
+- Clean and fast development setup with Vite
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🛠 Tech Stack
+- **React**
+- **Vite**
+- **Redux Toolkit**
+- **Tailwind CSS**
+- **Clerk Authentication**
+- **Axios**
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 📦 Installation
+
+Navigate to the frontend folder:
+
+```bash
+cd front-end
+npm install
+Run the app locally:
+
+bash
+npm run dev
+The app will run on:
+http://localhost:5173
+
+🔑 Environment Variables
+Create a .env file and add:
+
+env
+VITE_CLERK_PUBLISHABLE_KEY=
+VITE_BASE_URL=
+Example:
+
+env
+VITE_BASE_URL=https://mini-face-book.vercel.app
+📌 Notes
+This is the client-side application only.
+
+Designed to work with the Mini Facebook backend API.
+
+Fully responsive and optimized for performance.
+
+👨‍💻 Author
+Mohammad Saber
