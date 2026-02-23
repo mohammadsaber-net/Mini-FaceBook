@@ -60,8 +60,7 @@ function App() {
     <>
     <Toaster />
     <Routes>
-      <Route path="/sign-up" element={<SignUpPage />} />
-
+    <Route path="/sign-up" element={<SignUpPage />} />
     <Route path="/" element={!user?<Login />:<LayOut />}>
       <Route index element={<Feed />}/>
       <Route path="/messages" element={<Message />}/>

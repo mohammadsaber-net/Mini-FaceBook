@@ -5,6 +5,7 @@ import { FaceUser } from "../model/FaceUser.js"
 import { Post } from "../model/posts.js"
 import { Connection } from "../model/Connections.js"
 import { catchErrorMidelware, handleError } from "../middleware/authentication.js"
+import { use } from "react"
 export const getUserData=catchErrorMidelware( async(req,res,next)=>{
         const {userId}=req.auth()
         const value=await FaceUser.findById(userId).populate("blocked")
@@ -132,6 +133,7 @@ export const unFollowUser=catchErrorMidelware(async(req,res,next)=>{
 })
 export const getUserProfile=catchErrorMidelware(async(req,res,next)=>{
         const {userId}=req.auth()
+        if (!userId) return handleError("user not found",404,next)
         const {id}=req.body
         const profile=await FaceUser.findById(id).populate("followers following connections")
         const posts=await Post.find({user:id}).populate("user").sort({createdAt:-1})
@@ -145,20 +147,21 @@ export const blocked=catchErrorMidelware(async(req,res,next)=>{
         const {userId}=req.auth()
         const {blockedId}=req.body
         if(userId===blockedId){
-            return handleError("not available",200,next)
+            return handleError("not available",400,next)
         }
         const user=await FaceUser.findById(userId)
+        if (!user) return handleError("user not found",404,next)
         if(user.blocked.includes(blockedId)){
             user.blocked=user.blocked.filter(id=>id !== blockedId)
             await user.save()
-            res.status(200).json({
+           return res.status(200).json({
                 success:true,
                 message:"user unblocked successfully",
                 block:user.blocked
             })
         }else{
            user.blocked.push(blockedId)
-           const blockedUser=await FaceUser.findById(blockedId)
+           await user.save()
             await Connection.updateMany(
             {
                 $or: [
@@ -169,25 +172,22 @@ export const blocked=catchErrorMidelware(async(req,res,next)=>{
             },
             { $set: { status: "pending" } }
             );
-
-           user.connections=user.connections.filter(id=>id !==blockedId)
-           user.following=user.following.filter(id=>id !==blockedId)
-           user.followers=user.followers.filter(id=>id !==blockedId)
-           blockedUser.connections=blockedUser.connections.filter(id=>id !==userId)
-           blockedUser.following=blockedUser.following.filter(id=>id !==userId)
-           blockedUser.followers=blockedUser.followers.filter(id=>id !==userId)
-           const userPosts=await Post.find({user:userId})
-           const blockedUserPosts=await Post.find({user:blockedId})
-           userPosts.forEach(async(post)=>{
-                post.likes_count=post.likes_count.filter(id=>id !== blockedId)
-                await post.save()
-           })
-           blockedUserPosts.forEach(async(post)=>{
-                post.likes_count=post.likes_count.filter(id=>id !== userId)
-                await post.save()
-           })
-           await user.save()
-           await blockedUser.save()
+            await FaceUser.updateMany(
+                {_id:{$in:[userId,blockedId]}},
+                {
+                    $pull:{
+                        connections:{$in:[userId,blockedId]},
+                        followers:{$in:[userId,blockedId]},
+                        following:{$in:[userId,blockedId]}
+                    }
+                }
+            )
+            await Post.updateMany(
+                {user:{$in:[userId,blockedId]}},
+                {$pull:{
+                    likes_count:{$in:[userId,blockedId]}
+                }}
+            )
             res.status(200).json({
                 success:true,
                 message:"user blocked successfully",
