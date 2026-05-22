@@ -69,34 +69,6 @@ export const getUserConnections = catchErrorMidelware(async (req, res, next) => 
             pendingConnections,
     });
 });
-
-// export const getUserConnections=catchErrorMidelware(
-// async(req,res,next)=>{
-//        const {userId}=req.auth()
-//        const user =await FaceUser.findById(userId).populate("connections followers following")
-//        if (!user) {
-//         return handleError("User not found",404,next)
-//         }
-//        const connections=user.connections 
-//        const followers=user.followers 
-//        const following=user.following 
-//        const pendingConnectionsDocs = await Connection.find({
-//         to_user_id: userId,
-//         status: "pending"
-//         }).populate("from_user_id");
-
-//         const pendingConnections = pendingConnectionsDocs.map(
-//         (connection) => connection.from_user_id
-//         );
-
-//        res.status(200).json({
-//         success:true,
-//         connections,
-//         followers,
-//         following,
-//         pendingConnections
-//        })
-// })
 export const acceptConnectionRequest=catchErrorMidelware(
     async(req,res,next)=>{
         const {userId}=req.auth()

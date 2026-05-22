@@ -1,7 +1,7 @@
 export const catchErrorMidelware=(catchError)=>{
     return(req,res,next)=>{
         catchError(req,res,next).catch(err=>{
-            console.log("errrrr,",err.message)
+            console.log("errrrrorrrr,",err)
             next(err)
         })
     }

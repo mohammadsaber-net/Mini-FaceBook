@@ -18,7 +18,6 @@ const app=express()
 await connectDb()
 app.use(express.json())
 app.use(cors())
-console.log(FaceUser.collection.name);
 app.use(clerkMiddleware())
 
 app.get("/",(req,res)=>res.send("server is running"))

@@ -37,7 +37,6 @@ function Feed(){
             <div className="hidden md:block w-60 bg-white">
                 <div className="fixed w-60 top-15 left-5">
                     <Sponsore />
-                   {/* <RecentMessage /> */}
                 </div>
             </div>
             <div className="pt-10">
@@ -53,6 +52,8 @@ function Feed(){
             </div>
             
         </div>
-    ):<Loading />
+    ):(
+        <div>hello</div>
+    )
 }
 export default Feed
