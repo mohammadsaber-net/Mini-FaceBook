@@ -1,5 +1,5 @@
 import { UserButton } from '@clerk/clerk-react'
-import { Home, Menu, MessageCircle, Search, ShoppingBasket } from 'lucide-react'
+import { Home, Menu, MessageCircle, Search, ShoppingBasket, User } from 'lucide-react'
 import { useState } from 'react'
 import { FaFacebook, FaUserFriends } from 'react-icons/fa'
 import { NavLink } from 'react-router-dom'
@@ -53,7 +53,7 @@ export default function Navbar() {
             <MessageCircle className='text-gray-600'/>
         </NavLink>
         <NavLink to={`/connections`} className={({ isActive }) =>`flex-cent hover:bg-gray-200 transition cursor-pointer active:scale-95 h-10 w-16 rounded-lg ${isActive ? 'text-blue-600' : 'text-gray-950'}`}>
-        <FaUserFriends className='text-gray-600 size-8'/>
+        <User className='text-gray-600 size-8'/>
         </NavLink>
         <NavLink to={`/`} className={({ isActive }) =>`flex-cent hover:bg-gray-200 transition cursor-pointer active:scale-95 h-10 w-16 rounded-lg ${isActive ? 'text-blue-600' : 'text-gray-950'}`}>
         <Home className='text-gray-600'/>

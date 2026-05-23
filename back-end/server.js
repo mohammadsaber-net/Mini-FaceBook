@@ -19,8 +19,18 @@ await connectDb()
 app.use(express.json())
 app.use(cors())
 app.use(clerkMiddleware())
-
 app.get("/",(req,res)=>res.send("server is running"))
+app.get("/test", async(req,res)=>{
+
+    await FaceUser.create({
+        _id:"user_34W871vyTseMbG86SZp9sTkqofn",
+        email:"test@test.com",
+        full_name:"Mohamed Saber",
+        username:"mohamed"
+    })
+
+    res.send("created")
+})
 app.use("/api/inngest",serve({client:inngest,functions}))
 app.use("/api/user",userRouter)
 app.use("/api/connection",connectionRouter)

@@ -39,8 +39,10 @@ export const sendConnectionRequest=catchErrorMidelware(
 })
 export const getUserConnections = catchErrorMidelware(async (req, res, next) => {
         const { userId } = req.auth();
-        const user = await FaceUser.findById(userId)
+        console.log("userId",userId)
+        const user = await FaceUser.findOne({_id:userId})
             .populate("connections followers following");
+        console.log("user======>",user)
         if (!user) {
             return handleError("User not found", 404, next);
         }
