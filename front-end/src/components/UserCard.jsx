@@ -54,9 +54,11 @@ export default function UserCard(users) {
             <ResponsiveImage src={user.profile_picture} className='size-8
          ' alt="" />
         </div>
-         <p className='font-semibold mt-4 text-blue-600'>
+         <div 
+         onClick={()=>navigate(`/profile/${user._id}`)}
+         className='font-semibold mt-4 cursor-pointer text-blue-600'>
             {user.full_name}
-         </p>
+         </div>
          {
             user.username&&<p className='text-gray-600 mt-2'>{user.username}</p>
          }

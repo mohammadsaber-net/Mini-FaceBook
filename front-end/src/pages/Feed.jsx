@@ -9,6 +9,7 @@ import api from "../api/axios.js"
 import toast from "react-hot-toast"
 import Sponsore from "../components/sponsore.jsx"
 import SetPost from "../components/setPost.jsx"
+import { setShowPost } from "../redux/models/showModels.js"
 function Feed(){
     const [feeds,setFeeds]=useState([])
     const [loading,setLoading]=useState(true)
@@ -53,7 +54,7 @@ function Feed(){
             
         </div>
     ):(
-        <div>hello</div>
+        <Loading />
     )
 }
 export default Feed

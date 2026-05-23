@@ -4,29 +4,16 @@ import axios from "axios";
 export const fetchConnections=createAsyncThunk(
 "connections/fetchConnections",
 async(token,{rejectWithValue})=>{
-
     try {
-
-        console.log("token =>", token)
-
-        const response = await axios.get(
-            "http://localhost:3000/api/connection/connections",
+        const response = await api.get("/api/connection/connections",
             {
                 headers:{
                     Authorization:`Bearer ${token}`
                 }
             }
         )
-
-        console.log("response=>",response.data)
-
         return response.data
-
     } catch(error) {
-
-        console.log("STATUS:",error.response?.status)
-        console.log("DATA:",error.response?.data)
-
         return rejectWithValue(
             error.response?.data || error.message
         )

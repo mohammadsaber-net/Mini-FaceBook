@@ -24,7 +24,7 @@ export default function Navbar() {
       </div>
       <div className=' justify-between hidden sm:flex items-center'>
         <NavLink to={`/connections`} className={({ isActive }) =>`relative w-20 ${isActive?"text-blue-600 before:opacity-100":"before:opacity-0"}  h-full flex-cent rounded-md hover:bg-gray-200  mx-1 transition before:w-full before:h-1 before:z-10 before:absolute before:-bottom-1 before:left-0 before:bg-blue-600 before:content-['']`}>
-        <FaUserFriends className='size-5'/>
+        <User className='size-5'/>
         </NavLink>
         <NavLink to={`/`} className={({ isActive }) =>` ${isActive?"text-blue-600 before:opacity-100":"before:opacity-0"} mx-1 relative w-20 h-full flex-cent rounded-md hover:bg-gray-200 transition before:w-full before:h-1 before:z-10 before:absolute before:-bottom-1 before:left-0 before:bg-blue-600 before:content-['']`}>
         <Home className='size-5'/>
@@ -46,6 +46,9 @@ export default function Navbar() {
         </NavLink>
       </div>
       <div className='sm:hidden px-2 mt-1 flex justify-between items-center'>
+        <NavLink className={({ isActive }) =>`flex-cent hover:bg-gray-300 transition cursor-pointer size-10 active:scale-95 rounded-full bg-gray-200${isActive ? 'text-blue-600' : 'text-gray-950'}`}>
+            <UserButton />
+        </NavLink>
         <NavLink to={`/sponsore`} className={({ isActive }) =>`flex-cent hover:bg-gray-200 transition cursor-pointer active:scale-95 h-10 w-16 rounded-lg ${isActive ? 'text-blue-600' : 'text-gray-950'}`}>
             <ShoppingBasket className='text-gray-600'/>
         </NavLink>
