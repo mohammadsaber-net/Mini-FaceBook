@@ -22,10 +22,14 @@ app.use(
       "http://localhost:5173",
       "https://mini-facebook-98.vercel.app"
     ],
-    credentials: true
+    credentials: true,
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization"
+    ]
   })
 );
-app.use(express.json())
+app.use(express.json());
 app.use(clerkMiddleware())
 app.get("/",(req,res)=>res.send("server is running"))
 app.use("/api/inngest",serve({client:inngest,functions}))
