@@ -8,12 +8,14 @@ import { Message } from "../model/messages.js";
 export const inngest = new Inngest({ id: "my-app" });
 
 //inngest function to save user data to a data base
-
+// {event:"clerk/user.created"}
 const syncUserCreation=inngest.createFunction(
-    {id:"sync-user-from-clerk"},
-    {event:"clerk/user.created"},
+    {
+        id:"sync-user-from-clerk",
+        triggers:{event:"clerk/user.created"}
+    },
     async({event})=>{
-        const {id,first_name,last_name,email_addresses,password,image_url}=event.data
+        const {id,first_name,last_name,email_addresses,image_url}=event.data
         let username=email_addresses[0].email_address.split("@")[0]
         const user=await FaceUser.findOne({username})
         if(user){
@@ -24,8 +26,7 @@ const syncUserCreation=inngest.createFunction(
             email:email_addresses[0].email_address,
             full_name:first_name + " "+last_name,
             profile_picture:image_url,
-            username:username,
-            password
+            username:username
         }
         await FaceUser.create(userDate)
     }
@@ -38,8 +39,10 @@ const syncUserCreation=inngest.createFunction(
 
 
 const syncUserUpdating=inngest.createFunction(
-    {id:"update-user-from-clerk"},
-    {event:"clerk/user.update"},
+    {
+        id:"update-user-from-clerk",
+        triggers: {event:"clerk/user.update"}
+    },
     async({event})=>{
         const {id,first_name,last_name,email_addresses,image_url}=event.data
         const userDate={
@@ -55,8 +58,10 @@ const syncUserUpdating=inngest.createFunction(
 
 
 const syncUserDeleting=inngest.createFunction(
-    {id:"delete-user-from-clerk"},
-    {event:"clerk/user.deleted"},
+    {
+        id:"delete-user-from-clerk",
+        triggers:{event:"clerk/user.deleted"}
+    },
     async({event})=>{
         await FaceUser.findByIdAndDelete(event.data.id)
     }
@@ -67,8 +72,10 @@ const syncUserDeleting=inngest.createFunction(
 // Create an empty array where we'll export future Inngest functions
 //inngest function to reminde you about new request
 const sendNewConnectionReminder=inngest.createFunction(
-    {id:"send-new-connection-reminder"},
-    {event:"app/connection-request"},
+    {
+        id:"send-new-connection-reminder",
+        triggers:{event:"app/connection-request"}
+    },
     async({event,step})=>{
         const connectionId =event.data.connectionId
         const connection =await Connection.findById(connectionId).populate("from_user_id to_user_id")
@@ -103,8 +110,8 @@ const sendNewConnectionReminder=inngest.createFunction(
 )}
 )
 const deleteStory = inngest.createFunction(
-  { id: "story-delete" },
-  { event: "app/story.delete" },
+  { id: "story-delete" , 
+    triggers:{ event: "app/story.delete" }},
   async ({ event, step }) => {
     const storyId = event.data.storyId
     const in24H = new Date(Date.now() + 24 * 60 * 60 * 1000)
@@ -118,8 +125,8 @@ const deleteStory = inngest.createFunction(
   }
 )
 const sendNavigationOfUnseenMasseges=inngest.createFunction(
-    {id:"send-unseen-messages-notification"},
-    {cron:"TZ=America/New_York 0 9 * * *"},
+    {id:"send-unseen-messages-notification",
+        triggers:{cron:"TZ=America/New_York 0 9 * * *"}},
     async ({step})=>{
         const messages=await Message.find({seen:false}).populate("to_user_id")
         const unSeenCount={}

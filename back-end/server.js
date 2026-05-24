@@ -16,8 +16,16 @@ import { FaceUser } from './model/FaceUser.js'
 
 const app=express()
 await connectDb()
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://mini-facebook-98.vercel.app"
+    ],
+    credentials: true
+  })
+);
 app.use(express.json())
-app.use(cors())
 app.use(clerkMiddleware())
 app.get("/",(req,res)=>res.send("server is running"))
 app.use("/api/inngest",serve({client:inngest,functions}))
