@@ -61,10 +61,10 @@ export default function PostCard({post,id,addUser}) {
             post.content && <div dangerouslySetInnerHTML={{__html: postWithHashtags}} className="text-gray-800 text-sm whitespace-pre-line"/>
         }
         </div>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 justify-items-center gap-2">
             {
                 post.image_url?.map((img,index)=>(
-                    <ResponsiveImage src={img} key={index} className={`w-full h-48 object-cover rounded-lg 
+                    <ResponsiveImage src={img} key={index} className={`!max-w-48 h-40 object-contain rounded-lg 
                         ${post.image_url.length===1&&"col-span-2 h-auto"}`} alt="" />
                 ))
             }
